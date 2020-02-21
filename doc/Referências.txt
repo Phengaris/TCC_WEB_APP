@@ -1,0 +1,26 @@
+Para ordenar as expressÃµes aritmeticas foram usados:
+
+	https://dev.to/quantumsheep/how-calculators-read-mathematical-expression-with-operator-precedence-4n9h
+
+	https://en.wikipedia.org/wiki/Shunting-yard_algorithm	
+
+	https://brilliant.org/wiki/shunting-yard-algorithm/
+	
+	https://rosettacode.org/wiki/Parsing/Shunting-yard_algorithm#C.23
+	
+	
+Para colorir imagem via js
+
+	https://dev.opera.com/articles/html5-canvas-basics/#pixelbasedmanipulation
+	
+	https://stackoverflow.com/questions/13052347/change-color-of-parts-of-image-with-javascript
+	
+	https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+	
+Para histórico
+
+https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_lightbox
+
+Para o TCC
+
+https://comoelaborarumtcc.net/
