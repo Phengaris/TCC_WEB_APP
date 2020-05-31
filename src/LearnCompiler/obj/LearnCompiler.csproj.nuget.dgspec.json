@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\sources\\git\\tcc\\LearnCompiler\\LearnCompiler.csproj": {}
+    "D:\\Documentos\\UTP\\tcc\\TCC_WEB_APP\\src\\LearnCompiler\\LearnCompiler.csproj": {}
   },
   "projects": {
-    "C:\\sources\\git\\tcc\\LearnCompiler\\LearnCompiler.csproj": {
+    "D:\\Documentos\\UTP\\tcc\\TCC_WEB_APP\\src\\LearnCompiler\\LearnCompiler.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\sources\\git\\tcc\\LearnCompiler\\LearnCompiler.csproj",
+        "projectUniqueName": "D:\\Documentos\\UTP\\tcc\\TCC_WEB_APP\\src\\LearnCompiler\\LearnCompiler.csproj",
         "projectName": "LearnCompiler",
-        "projectPath": "C:\\sources\\git\\tcc\\LearnCompiler\\LearnCompiler.csproj",
-        "packagesPath": "C:\\Users\\a306113\\.nuget\\packages\\",
-        "outputPath": "C:\\sources\\git\\tcc\\LearnCompiler\\obj\\",
+        "projectPath": "D:\\Documentos\\UTP\\tcc\\TCC_WEB_APP\\src\\LearnCompiler\\LearnCompiler.csproj",
+        "packagesPath": "C:\\Users\\Hello\\.nuget\\packages\\",
+        "outputPath": "D:\\Documentos\\UTP\\tcc\\TCC_WEB_APP\\src\\LearnCompiler\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\a306113\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hello\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,11 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "http://maven2.it.volvo.net/repository/csbr/": {},
-          "http://nexus.it.volvo.net/repository/drs-ms-core/": {},
-          "http://nexus.it.volvo.net/repository/nuget-drs-ms/": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.telerik.com/nuget/": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.0": {
@@ -61,7 +54,7 @@
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.0.2, 3.0.2]"
+              "version": "[3.0.3, 3.0.3]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
@@ -80,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

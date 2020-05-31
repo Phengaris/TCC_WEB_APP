@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZcZHUC0MP9n4yL5tRWUhvGF9ebMVPXL2Arj3nBT4sYLIaRsG5KaaqYfER29ZQACp6sP4uFp2l2767K2MPGBaFg==",
+  "success": true,
+  "projectFilePath": "D:\\Documentos\\UTP\\tcc\\TCC_WEB_APP\\src\\LearnCompiler\\LearnCompiler.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Hello\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.0.1\\microsoft.aspnetcore.app.ref.3.0.1.nupkg.sha512",
+    "C:\\Users\\Hello\\.nuget\\packages\\microsoft.netcore.app.ref\\3.0.0\\microsoft.netcore.app.ref.3.0.0.nupkg.sha512",
+    "C:\\Users\\Hello\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.0.3\\microsoft.netcore.app.host.win-x64.3.0.3.nupkg.sha512",
+    "C:\\Users\\Hello\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.0.0\\microsoft.windowsdesktop.app.ref.3.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
