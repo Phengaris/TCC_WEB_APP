@@ -5,7 +5,15 @@
             coordinates: [
                 {
                     case_start: "1",
-                    case_end: "IGNORAR",
+                    case_end: "SEPARADOR",
+                    width_start: [0],
+                    width_end: [380],
+                    height_start: [20],
+                    height_end: [527]
+                },
+                {
+                    case_start: "SEPARADOR",
+                    case_end: "SEPARADOR",
                     width_start: [0],
                     width_end: [380],
                     height_start: [20],
@@ -486,281 +494,288 @@
         { lexeme: "NOT", token: "PR_NOT" }
     ];
     var ignorableChars = ["Backspace", "Shift"];
+    var separators = [" ", "Enter", "Tab"];
     return {
         analysis: function (character) {
             var state = this.getState();
-            document.getElementById("state").setAttribute("state_init", state);
-            if (!ignorableChars.includes(character)) {
-                switch (state) {
-                    /*
-                     * The 1st case validates all entries
-                     */
-                    case "1":
-                        this.analysisCase1(character);
-                        break;
-                    /*
-                     * The 2nd case validates integer entries 
-                     */
-                    case "2":
-                        this.analysisCase2(character);
-                        break;
-                    /*
-                    * The 3th case validates decimal entries
-                    */
-                    case "3":
-                        this.analysisCase3(character);
-                        break;
-                    /*
-                     * The 4th case validates character entries
-                     */
-                    case "4":
-                        this.analysisCase4(character);
-                        break;
-                    /*
-                     * The 5th case validates character entries
-                     */
-                    case "5":
-                        this.analysisCase5(character);
-                        break;
-                    /*
-                     * The 6th case validates string entries
-                     */
-                    case "6":
-                        this.analysisCase6(character);
-                        break;
-                    /*
-                     * The 7th case validates '>' entries
-                     */
-                    case "7":
-                        this.analysisCase7(character);
-                        break;
-                    /*
-                     * The 8th case validates '<' entries
-                     */
-                    case "8":
-                        this.analysisCase8(character);
-                        break;
-                    /*
-                     * The 9th case validates '=' entries
-                     */
-                    case "9":
-                        this.analysisCase9(character);
-                        break;
-                    /*
-                     * The 10th case validates alphanumeric entries
-                     */
-                    case "10":
-                        this.analysisCase10(character);
-                        break;
-                    /*
-                     * The 11th case validates '_' entries
-                     */
-                    case "11":
-                        this.analysisCase11(character);
-                        break;
-                    /*
-                     * The 12th case validates '/' entries
-                     */
-                    case "12":
-                        this.analysisCase12(character);
-                        break;
-                    /*
-                     * The 13th case validates block comentary
-                     */
-                    case "13":
-                        this.analysisCase13(character);
-                        break;
-                    /*
-                     * The 14th case validates block comentary
-                     */
-                    case "14":
-                        this.analysisCase14(character);
-                        break;
-                    /*
-                     * The 15th case validates line comentary
-                     */
-                    case "15":
-                        this.analysisCase15(character);
-                        break;
-                    case "CONTROL":
-                        this.analysisCaseControl(character);
-                        break;
-                    default:
-                        break;
-                }
+
+            this.setElementAttribute("state", "state_init", state);
+            switch (state) {
+                /*
+                 * The 1st case validates all entries
+                 */
+                case "1":
+                    this.analysisCase1(character);
+                    break;
+                /*
+                 * The 2nd case validates integer entries 
+                 */
+                case "2":
+                    this.analysisCase2(character);
+                    break;
+                /*
+                * The 3th case validates decimal entries
+                */
+                case "3":
+                    this.analysisCase3(character);
+                    break;
+                /*
+                 * The 4th case validates character entries
+                 */
+                case "4":
+                    this.analysisCase4(character);
+                    break;
+                /*
+                 * The 5th case validates character entries
+                 */
+                case "5":
+                    this.analysisCase5(character);
+                    break;
+                /*
+                 * The 6th case validates string entries
+                 */
+                case "6":
+                    this.analysisCase6(character);
+                    break;
+                /*
+                 * The 7th case validates '>' entries
+                 */
+                case "7":
+                    this.analysisCase7(character);
+                    break;
+                /*
+                 * The 8th case validates '<' entries
+                 */
+                case "8":
+                    this.analysisCase8(character);
+                    break;
+                /*
+                 * The 9th case validates '=' entries
+                 */
+                case "9":
+                    this.analysisCase9(character);
+                    break;
+                /*
+                 * The 10th case validates alphanumeric entries
+                 */
+                case "10":
+                    this.analysisCase10(character);
+                    break;
+                /*
+                 * The 11th case validates '_' entries
+                 */
+                case "11":
+                    this.analysisCase11(character);
+                    break;
+                /*
+                 * The 12th case validates '/' entries
+                 */
+                case "12":
+                    this.analysisCase12(character);
+                    break;
+                /*
+                 * The 13th case validates block comentary
+                 */
+                case "13":
+                    this.analysisCase13(character);
+                    break;
+                /*
+                 * The 14th case validates block comentary
+                 */
+                case "14":
+                    this.analysisCase14(character);
+                    break;
+                /*
+                 * The 15th case validates line comentary
+                 */
+                case "15":
+                    this.analysisCase15(character);
+                    break;
+                case "CONTROL":
+                    this.analysisCaseControl(character);
+                    break;
+                case "SEPARADOR":
+                    this.analysisCaseSeparator(character);
+                    break;
+                default:
+                    break;
             }
         },
         analysisCase1: function (character) {
-            if (" " === character || "Enter" === character || "Tab" === character)
-                state.setAttribute("state", "IGNORAR");
+            if (separators.includes(character))
+                this.setElementAttribute("state", "state", "SEPARADOR");
             else if ("Control" === character)
-                state.setAttribute("state", "CONTROL");
+                this.setElementAttribute("state", "state", "CONTROL");
             else if ("," === character)
-                state.setAttribute("state", "SIN_V");
+                this.setElementAttribute("state", "state", "SIN_V");
             else if (";" === character)
-                state.setAttribute("state", "SIN_PV");
+                this.setElementAttribute("state", "state", "SIN_PV");
             else if ("(" === character)
-                state.setAttribute("state", "SIN_PAR_A");
+                this.setElementAttribute("state", "state", "SIN_PAR_A");
             else if (")" === character)
-                state.setAttribute("state", "SIN_PAR_F");
+                this.setElementAttribute("state", "state", "SIN_PAR_F");
             else if ("[" === character)
-                state.setAttribute("state", "SIN_COL_A");
+                this.setElementAttribute("state", "state", "SIN_COL_A");
             else if ("]" === character)
-                state.setAttribute("state", "SIN_COL_F");
+                this.setElementAttribute("state", "state", "SIN_COL_F");
             else if ("+" === character)
-                state.setAttribute("state", "OP_SOMA");
+                this.setElementAttribute("state", "state", "OP_SOMA");
             else if ("-" === character)
-                state.setAttribute("state", "OP_SUBTRAI");
+                this.setElementAttribute("state", "state", "OP_SUBTRAI");
             else if ("*" === character)
-                state.setAttribute("state", "OP_MULTI");
+                this.setElementAttribute("state", "state", "OP_MULTI");
             else if (Number.isInteger(parseInt(character)))
-                state.setAttribute("state", "2");
+                this.setElementAttribute("state", "state", "2");
             else if ("'" === character)
-                state.setAttribute("state", "4");
+                this.setElementAttribute("state", "state", "4");
             else if ('"' === character)
-                state.setAttribute("state", "6");
+                this.setElementAttribute("state", "state", "6");
             else if (">" === character)
-                state.setAttribute("state", "7");
+                this.setElementAttribute("state", "state", "7");
             else if ("<" === character)
-                state.setAttribute("state", "8");
+                this.setElementAttribute("state", "state", "8");
             else if ("=" === character)
-                state.setAttribute("state", "9");
+                this.setElementAttribute("state", "state", "9");
             else if (this.isAlphabet(character))
-                state.setAttribute("state", "10");
+                this.setElementAttribute("state", "state", "10");
             else if ("_" === character)
-                state.setAttribute("state", "11");
+                this.setElementAttribute("state", "state", "11");
             else if ("/" === character)
-                state.setAttribute("state", "12");
+                this.setElementAttribute("state", "state", "12");
             //else
             //    Console.WriteLine("Foi impossível mapear o character {0}!", character);
         },
         analysisCase2: function (character) {
             if (Number.isInteger(parseInt(character)))
-                state.setAttribute("state", "2");
+                this.setElementAttribute("state", "state", "2");
             else if ("." === character)
-                state.setAttribute("state", "3");
+                this.setElementAttribute("state", "state", "3");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "NUM_INT");
+                this.setElementAttribute("state", "state", "NUM_INT");
             }
         },
         analysisCase3: function (character) {
             if (Number.isInteger(parseInt(character)))
-                state.setAttribute("state", "3");
+                this.setElementAttribute("state", "state", "3");
             else {
                 if (this.getLastChar() === ".") {
                     repeatWord = character;
-                    state.setAttribute("state", "ERRO_NUM_REAL");
+                    this.setElementAttribute("state", "state", "ERRO_NUM_REAL");
                     var error = "Erro no caractere " + character + ". No presente contexto o valor" + character + " deve ser um número.";
                 } else {
                     repeatWord = character;
-                    state.setAttribute("state", "NUM_REAL");
+                    this.setElementAttribute("state", "state", "NUM_REAL");
                 }
             }
         },
         analysisCase4: function (character) {
             if (character === "'")
-                state.setAttribute("state", "CARACTERE");
+                this.setElementAttribute("state", "state", "CARACTERE");
             else if (character.length === 1)
-                state.setAttribute("state", "5");
+                this.setElementAttribute("state", "state", "5");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "ERRO_CARACTERE");
+                this.setElementAttribute("state", "state", "ERRO_CARACTERE");
                 var error = "Erro no caractere " + character + ". O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
             }
         },
         analysisCase5: function (character) {
             if (character === "'")
-                state.setAttribute("state", "CARACTERE");
+                this.setElementAttribute("state", "state", "CARACTERE");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "ERRO_CARACTERE");
+                this.setElementAttribute("state", "state", "ERRO_CARACTERE");
                 var error = "Erro no caractere " + character + ". O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
             }
         },
         analysisCase6: function (character) {
             if (character === '"')
-                state.setAttribute("state", "STRING");
+                this.setElementAttribute("state", "state", "STRING");
             else if (character.length === 1)
-                state.setAttribute("state", "6");
+                this.setElementAttribute("state", "state", "6");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "ERRO_STRING");
+                this.setElementAttribute("state", "state", "ERRO_STRING");
                 var error = "Erro no caractere " + character + ". O tipo string suporta 0 ou mais dígitos e deve ser fechado com aspas duplas."
             }
         },
         analysisCase7: function (character) {
             if (character === "=")
-                state.setAttribute("state", "OP_MAIOR_IGUAL");
+                this.setElementAttribute("state", "state", "OP_MAIOR_IGUAL");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "OP_MAIOR");
+                this.setElementAttribute("state", "state", "OP_MAIOR");
             }
         },
         analysisCase8: function (character) {
             if (character === "=")
-                state.setAttribute("state", "OP_MENOR_IGUAL");
+                this.setElementAttribute("state", "state", "OP_MENOR_IGUAL");
             else if (character === ">")
-                state.setAttribute("state", "OP_DIFERENTE");
+                this.setElementAttribute("state", "state", "OP_DIFERENTE");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "OP_MENOR");
+                this.setElementAttribute("state", "state", "OP_MENOR");
             }
         },
         analysisCase9: function (character) {
             if (character === "=")
-                state.setAttribute("state", "OP_IGUAL");
+                this.setElementAttribute("state", "state", "OP_IGUAL");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "OP_ATRIBUI");
+                this.setElementAttribute("state", "state", "OP_ATRIBUI");
             }
         },
         analysisCase10: function (character) {
             if (this.isAlphanumeric(character))
-                state.setAttribute("state", "10");
+                this.setElementAttribute("state", "state", "10");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "TABELA_EXCLUSIVOS");
+                this.setElementAttribute("state", "state", "TABELA_EXCLUSIVOS");
                 //var reservedWord = this.getReservedWord();
                 //if (reservedWord !== null && reservedWord !== undefined) {
-                //    state.setAttribute("state", "TABELA_EXCLUSIVOS"); EXCLUSIVO DA LINGUAGEM
+                //    this.setElementAttribute("state", "state", "TABELA_EXCLUSIVOS"); EXCLUSIVO DA LINGUAGEM
                 //} else {
-                //    state.setAttribute("state", "TABELA_EXCLUSIVOS"); IDENTIFICADOR
+                //    this.setElementAttribute("state", "state", "TABELA_EXCLUSIVOS"); IDENTIFICADOR
                 //}
             }
         },
         analysisCase11: function (character) {
             if (character === "_")
-                state.setAttribute("state", "11");
+                this.setElementAttribute("state", "state", "11");
             else if (this.isAlphabet(character))
-                state.setAttribute("state", "10");
+                this.setElementAttribute("state", "state", "10");
         },
         analysisCase12: function (character) {
             if (character === "*")
-                state.setAttribute("state", "13");
+                this.setElementAttribute("state", "state", "13");
             else if (character === "/")
-                state.setAttribute("state", "15");
+                this.setElementAttribute("state", "state", "15");
             else {
                 repeatWord = character;
-                state.setAttribute("state", "OP_DIVI");
+                this.setElementAttribute("state", "state", "OP_DIVI");
             }
         },
         analysisCase13: function (character) {
             if (character === "*")
-                state.setAttribute("state", "14");
+                this.setElementAttribute("state", "state", "14");
         },
         analysisCase14: function (character) {
             var word = this.getWord;
             var lastChar = word[word.length - 1];
             if (character === "/" && lastChar === "*") //para validar um comentario eh necessario validar se o penultimo caracter corresponde a *
-                state.setAttribute("state", "1");
+                this.setElementAttribute("state", "state", "1");
         },
         analysisCase15: function (character) {
             if (character === "Enter")
-                state.setAttribute("state", "1");
+                this.setElementAttribute("state", "state", "1");
         },
         analysisCaseControl: function (character) {
-            state.setAttribute("state", "1");
+            this.setElementAttribute("state", "state", "1");
+        },
+        analysisCaseSeparator: function (character) {
+            if (!separators.includes(character))
+                repeatWord = character;
         },
         analyseEntireCode: function (code) {
             for (var i = 0; i < code.length; i++) {
@@ -768,12 +783,6 @@
                 if (repeatWord !== "")
                     --i;
             }
-            var word = this.getWord();
-            if (word !== "")
-                document.getElementById("state").setAttribute("needRepeat", "true");
-            else
-                document.getElementById("state").setAttribute("needRepeat", "false");
-
         },
         createImageFromCanvas: function (appendId, canvas) {
             var image = new Image();
@@ -790,9 +799,11 @@
         dyeImage: function (canvas, context, coordinates) {
             var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             var data = imageData.data;
-            var random_red = this.getRandomColor();
-            var random_green = this.getRandomColor();
-            var random_blue = this.getRandomColor();
+            var mustBe255 = this.getRandomValue(1, 4);
+            var random_red = this.getRandomValue(0, 255);
+            var random_green = this.getRandomValue(0, 255);
+            var random_blue = this.getRandomValue(0, 255);
+            mustBe255 === 1 ? random_red = 255 : mustBe255 === 2 ? random_green = 255 : random_blue = 255;
             var h = 0;
 
             while (coordinates.height_start.length > h) {
@@ -802,7 +813,7 @@
                         var r = data[index + 0],
                             g = data[index + 1],
                             b = data[index + 2];
-                        if (r !== 255 && g !== 255 && b !== 255) {
+                        if (!(r === 0 && g === 0 && b === 1)) {
                             data[index] = random_red;
                             data[index + 1] = random_green;
                             data[index + 2] = random_blue;
@@ -834,9 +845,7 @@
             var word = this.getWord();
             return word[word.length - 1];
         },
-        getRandomColor: function () {
-            var min = 0;
-            var max = 255;
+        getRandomValue: function (min, max) {
             var random = Math.floor(Math.random() * (max - min)) + min;
             return random;
         },
@@ -878,18 +887,24 @@
             if (repeatWord !== "")
                 this.onUserCodeKeyDown();
         },
+        setElementAttribute: function (id, attribute, value) {
+            document.getElementById(id).setAttribute(attribute, value);
+        },
         startAnalysis: function (key) {
+            if (ignorableChars.includes(key))
+                return;
             var needRepeat = true;
-            if (repeatWord === "")
-                needRepeat = false;
             repeatWord = "";
 
             var word = this.getWord();
 
-            var canvas = document.getElementById("myCanvas");
+            var canvas = document.getElementById("canvas");
             var context = canvas.getContext("2d");
 
             this.analysis(key);
+
+            if (repeatWord === "")
+                needRepeat = false;
 
             var state = this.getState();
 
@@ -907,13 +922,14 @@
                 this.dyeImage(canvas, context, coordinates);
 
                 if (!needRepeat)
-                    document.getElementById("state").setAttribute("word", word + key);
-
+                    this.setElementAttribute("state", "word", word + key);
+                if (state === "SEPARADOR" && !needRepeat)
+                    return;
                 if (!Number.isInteger(parseInt(state))) {
                     context.fillText(word, 10, 10);
                     this.createImageFromCanvas("history_canvas", canvas);
-                    document.getElementById("state").setAttribute("word", "");
-                    document.getElementById("state").setAttribute("state", "1");
+                    this.setElementAttribute("state", "word", "");
+                    this.setElementAttribute("state", "state", "1");
                 }
             }
         },
