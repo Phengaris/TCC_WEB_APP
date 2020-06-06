@@ -136,7 +136,7 @@
                     case_end: "2",
                     width_start: [0, 892, 907, 907, 934],
                     width_end: [892, 907, 934, 934, 965],
-                    height_start: [199, 226, 238, 415, 199],
+                    height_start: [199, 226, 238, 290, 199],
                     height_end: [525, 525, 290, 505, 525]
                 },
                 {
@@ -152,7 +152,7 @@
                     case_end: "3",
                     width_start: [640, 892, 907, 907, 934, 1533, 1548, 1548, 1576],
                     width_end: [892, 907, 934, 934, 1533, 1548, 1576, 1576, 1605],
-                    height_start: [195, 226, 238, 415, 195, 226, 238, 415, 195],
+                    height_start: [195, 226, 238, 290, 195, 226, 238, 290, 195],
                     height_end: [525, 525, 290, 505, 525, 525, 290, 505, 525]
                 },
                 {
@@ -160,7 +160,7 @@
                     case_end: "NUM_INT",
                     width_start: [640, 892, 907, 907, 934, 550],
                     width_end: [892, 907, 934, 934, 965, 1050],
-                    height_start: [195, 226, 238, 415, 195, 880],
+                    height_start: [195, 226, 238, 290, 195, 880],
                     height_end: [880, 880, 290, 880, 880, 1128]
                 },
                 {
@@ -176,7 +176,7 @@
                     case_end: "NUM_REAL",
                     width_start: [1275, 1533, 1548, 1548, 1576],
                     width_end: [1533, 1548, 1576, 1576, 2408],
-                    height_start: [195, 226, 238, 415, 195],
+                    height_start: [195, 226, 238, 290, 195],
                     height_end: [525, 525, 290, 505, 525]
                 },
                 {
@@ -184,7 +184,7 @@
                     case_end: "ERRO_NUM_REAL",
                     width_start: [1275, 1533, 1548, 1548, 1576, 1195],
                     width_end: [1533, 1548, 1576, 1576, 1605, 1685],
-                    height_start: [195, 226, 238, 415, 195, 880],
+                    height_start: [195, 226, 238, 290, 195, 880],
                     height_end: [880, 880, 290, 880, 880, 1128]
                 }
             ]
@@ -240,10 +240,10 @@
                 {
                     case_start: "1",
                     case_end: "6",
-                    width_start: [0, 911, 918],
-                    width_end: [911, 918, 965],
-                    height_start: [199, 243, 199],
-                    height_end: [524, 253, 523]
+                    width_start: [0, 911, 911, 918],
+                    width_end: [911, 918, 918, 965],
+                    height_start: [199, 243, 253, 199],
+                    height_end: [524, 253, 523, 523]
                 },
                 {
                     case_start: "6",
@@ -256,18 +256,18 @@
                 {
                     case_start: "6",
                     case_end: "ERRO_STRING",
-                    width_start: [639, 911, 918],
-                    width_end: [911, 918, 1924],
-                    height_start: [199, 243, 199],
-                    height_end: [524, 253, 524]
+                    width_start: [639, 911, 911, 918],
+                    width_end: [911, 918, 918, 1924],
+                    height_start: [199, 243, 253, 199],
+                    height_end: [524, 253, 524, 524]
                 },
                 {
                     case_start: "6",
                     case_end: "STRING",
                     width_start: [639, 911, 911, 918, 555],
                     width_end: [911, 918, 918, 965, 1050],
-                    height_start: [200, 243, 467, 200, 840],
-                    height_end: [840, 253, 483, 840, 1084]
+                    height_start: [200, 243, 253, 200, 840],
+                    height_end: [840, 253, 840, 840, 1084]
                 },
             ]
         },
@@ -493,7 +493,6 @@
         //op-unario
         { lexeme: "NOT", token: "PR_NOT" }
     ];
-    var ignorableChars = ["Backspace", "Shift"];
     var separators = [" ", "Enter", "Tab"];
     return {
         analysis: function (character) {
@@ -591,9 +590,6 @@
                 case "15":
                     this.analysisCase15(character);
                     break;
-                case "CONTROL":
-                    this.analysisCaseControl(character);
-                    break;
                 case "SEPARADOR":
                     this.analysisCaseSeparator(character);
                     break;
@@ -604,8 +600,6 @@
         analysisCase1: function (character) {
             if (separators.includes(character))
                 this.setElementAttribute("state", "state", "SEPARADOR");
-            else if ("Control" === character)
-                this.setElementAttribute("state", "state", "CONTROL");
             else if ("," === character)
                 this.setElementAttribute("state", "state", "SIN_V");
             else if (";" === character)
@@ -732,12 +726,12 @@
             else {
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "TABELA_EXCLUSIVOS");
-                //var reservedWord = this.getReservedWord();
-                //if (reservedWord !== null && reservedWord !== undefined) {
-                //    this.setElementAttribute("state", "state", "TABELA_EXCLUSIVOS"); EXCLUSIVO DA LINGUAGEM
-                //} else {
-                //    this.setElementAttribute("state", "state", "TABELA_EXCLUSIVOS"); IDENTIFICADOR
-                //}
+                var reservedWord = this.getReservedWord();
+                if (reservedWord !== null && reservedWord !== undefined) {
+                    this.setElementAttribute("state", "token", reservedWord.token); //EXCLUSIVO DA LINGUAGEM
+                } else {
+                    this.setElementAttribute("state", "token", "IDENTIFICADOR"); //IDENTIFICADOR
+                }
             }
         },
         analysisCase11: function (character) {
@@ -770,9 +764,6 @@
             if (character === "Enter")
                 this.setElementAttribute("state", "state", "1");
         },
-        analysisCaseControl: function (character) {
-            this.setElementAttribute("state", "state", "1");
-        },
         analysisCaseSeparator: function (character) {
             if (!separators.includes(character))
                 repeatWord = character;
@@ -784,12 +775,31 @@
                     --i;
             }
         },
+        clearCanvas: function () {
+            var canvas = document.getElementById("canvas");
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        },
         createImageFromCanvas: function (appendId, canvas) {
+            var word = this.getWord();
             var image = new Image();
             image.src = canvas.toDataURL();
-            image.style.width = "auto";
-            image.style.height = "30vh";
-            document.getElementById(appendId).appendChild(image);
+            image.className += "historyImgAnalex";
+
+            var text_div = document.createElement("div");
+            text_div.className += "text";
+            text_div.textContent = "Lexema: " + word + " | Token: " + this.getToken();
+
+            var div = document.createElement("div");
+            div.className += "historyAnalex";
+            div.setAttribute("word", word);
+
+            div.appendChild(text_div);
+            div.appendChild(image);
+
+            document.getElementById(appendId).appendChild(div);
+
+            General.showHistoryAnalexSlides(1);
         },
         drawImage: function (canvas, context, image) {
             canvas.width = image.width;
@@ -800,9 +810,9 @@
             var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             var data = imageData.data;
             var mustBe255 = this.getRandomValue(1, 4);
-            var random_red = this.getRandomValue(0, 255);
-            var random_green = this.getRandomValue(0, 255);
-            var random_blue = this.getRandomValue(0, 255);
+            var random_red = this.getRandomValue(0, 155);
+            var random_green = this.getRandomValue(0, 155);
+            var random_blue = this.getRandomValue(0, 155);
             mustBe255 === 1 ? random_red = 255 : mustBe255 === 2 ? random_green = 255 : random_blue = 255;
             var h = 0;
 
@@ -833,6 +843,9 @@
             );
         },
         getEntireCode: function () {
+            return document.getElementById("state").getAttribute("entire_code");
+        },
+        getEntireCurrentCode: function () {
             return document.getElementById("userCode").value;
         },
         getImage: function (imageId) {
@@ -840,6 +853,9 @@
         },
         getImageId: function (state) {
             return diagramCoordinates.find(f => f.coordinates.find(m => m.case_end === state)).img_id;
+        },
+        getAllHistory: function () {
+            return document.getElementsByClassName("historyAnalex");
         },
         getLastChar: function () {
             var word = this.getWord();
@@ -858,6 +874,9 @@
         },
         getStateInit: function () {
             return document.getElementById("state").getAttribute("state_init");
+        },
+        getToken: function () {
+            return document.getElementById("state").getAttribute("token");
         },
         getWord: function () {
             return document.getElementById("state").getAttribute("word");
@@ -878,21 +897,76 @@
             var code = (e.originalEvent || e).clipboardData.getData('text/plain');
             this.analyseEntireCode(code);
         },
-        onUserCodeKeyDown: function (e) {
+        onUserCodeKeyPress: function (e) {
             var key = repeatWord;
             if (e !== undefined) {
                 key = e.key;
             }
             this.startAnalysis(key);
             if (repeatWord !== "")
-                this.onUserCodeKeyDown();
+                this.onUserCodeKeyPress();
+        },
+        onUserCodeKeyUp: function (e) {
+            var key = e.key;
+            if (key === "Backspace") {
+                debugger
+                var entireCodeBefore = this.getEntireCode();
+                var entireCodeCurrent = this.getEntireCurrentCode();
+                var parentOfHistory = document.getElementById("slideshow_child");
+                var images = this.getAllHistory();
+                var indexOfImageToModify = 0;
+                var word = "";
+
+                if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
+                    word = this.getWord(); //get current word ------- COMO SABER A POSIÇÃO ATUAL DA EDIÇÃO???
+                    indexOfImageToModify = images.length - 1;
+                    if (word === "") { //means that the current is in history already
+                        if (images.length > 0) {
+                            var lastImage = images[indexOfImageToModify];
+                            word = lastImage.getAttribute("word"); //get last word
+                            parentOfHistory.removeChild(parentOfHistory.children[indexOfImageToModify]);
+                        }
+                    }
+
+                    this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
+                }
+                else if (entireCodeBefore.indexOf(entireCodeCurrent) === 1) {
+                    indexOfImageToModify = 0;
+                    if (images.length > 0) {
+                        var lastImage = images[indexOfImageToModify];
+                        word = lastImage.getAttribute("word"); //get last word
+                        parentOfHistory.removeChild(parentOfHistory.children[indexOfImageToModify]);
+                    } else {
+                        word = this.getWord();
+                    }
+                    this.setElementAttribute("state", "word", word.substring(1, word.length));
+                }
+
+                word = this.getWord(); //get alteraded word
+
+                if (word === "") {
+                    if (images.length > 0) {
+                        var lastImage = images[indexOfImageToModify];//images.length - 1];
+                        word = lastImage.getAttribute("word"); //get last word
+                        parentOfHistory.removeChild(parentOfHistory.children[indexOfImageToModify]);//lastChild);
+                    }
+                }
+
+                this.clearCanvas();
+                this.resetStateAttributes();
+                this.analyseEntireCode(word); //analyse word
+                this.setElementAttribute("state", "entire_code", entireCodeCurrent);
+            }
+        },
+        resetStateAttributes: function () {
+            this.setElementAttribute("state", "word", "");
+            this.setElementAttribute("state", "state", "1");
+            this.setElementAttribute("state", "token", "");
         },
         setElementAttribute: function (id, attribute, value) {
             document.getElementById(id).setAttribute(attribute, value);
         },
         startAnalysis: function (key) {
-            if (ignorableChars.includes(key))
-                return;
             var needRepeat = true;
             repeatWord = "";
 
@@ -908,7 +982,7 @@
 
             var state = this.getState();
 
-            if (state !== "1" && state !== "CONTROL") {
+            if (state !== "1") {
                 var img_id = this.getImageId(state);
                 var image = this.getImage(img_id);
 
@@ -921,15 +995,17 @@
 
                 this.dyeImage(canvas, context, coordinates);
 
-                if (!needRepeat)
+                if (!needRepeat) {
                     this.setElementAttribute("state", "word", word + key);
+                    this.setElementAttribute("state", "entire_code", this.getEntireCode() + key);
+                }
                 if (state === "SEPARADOR" && !needRepeat)
                     return;
                 if (!Number.isInteger(parseInt(state))) {
-                    context.fillText(word, 10, 10);
-                    this.createImageFromCanvas("history_canvas", canvas);
-                    this.setElementAttribute("state", "word", "");
-                    this.setElementAttribute("state", "state", "1");
+                    if (state !== "SEPARADOR" && this.getToken() === "")
+                        this.setElementAttribute("state", "token", state);
+                    this.createImageFromCanvas("slideshow_child", canvas);
+                    this.resetStateAttributes();
                 }
             }
         },

@@ -69,3 +69,4 @@ D:\Documentos\UTP\tcc\TCC_WEB_APP\src\LearnCompiler\obj\Debug\netcoreapp3.0\Lear
 D:\Documentos\UTP\tcc\TCC_WEB_APP\src\LearnCompiler\obj\Debug\netcoreapp3.0\LearnCompiler.pdb
 D:\Documentos\UTP\tcc\TCC_WEB_APP\src\LearnCompiler\obj\Debug\netcoreapp3.0\LearnCompiler.genruntimeconfig.cache
 D:\Documentos\UTP\tcc\TCC_WEB_APP\src\LearnCompiler\obj\Debug\netcoreapp3.0\LearnCompiler.csproj.CopyComplete
+D:\Documentos\UTP\tcc\TCC_WEB_APP\src\LearnCompiler\obj\Debug\netcoreapp3.0\LearnCompiler.csprojAssemblyReference.cache

@@ -23,11 +23,15 @@
 }
 
 .dinamicHeight{
-    height: 50vh;
+    height: 35vh;
 }
 
 .fullWidth {
     width: 100%;
+}
+
+.fullHeight {
+    height: 100%;
 }
 
 #canvas {
@@ -35,4 +39,52 @@
     height: 90%;
     max-width: 90%;
     margin-top: 3vh;
+}
+
+.slideshow-container {
+    position: relative;
+    margin: auto;
+}
+
+.historyAnalex {
+    display: none;
+    height: 100%;
+}
+
+.historyImgAnalex {
+    height: 90%;
+}
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+    .prev:hover, .next:hover {
+        background-color: rgba(0,0,0,0.8);
+    }
+
+.text {
+    height: 10%;
+    width: 100%;
+    text-align: center;
+}
+
+.minimalMargin{
+    margin-top: 1%;
 }
