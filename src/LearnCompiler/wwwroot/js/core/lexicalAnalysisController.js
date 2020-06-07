@@ -782,13 +782,15 @@
         },
         createImageFromCanvas: function (appendId, canvas) {
             var word = this.getWord();
+            var token = this.getToken();
             var image = new Image();
             image.src = canvas.toDataURL();
             image.className += "historyImgAnalex";
 
             var text_div = document.createElement("div");
             text_div.className += "text";
-            text_div.textContent = "Lexema: " + word + " | Token: " + this.getToken();
+            if (token !== "")
+                text_div.textContent = "Lexema: " + word + " | Token: " + token;
 
             var div = document.createElement("div");
             div.className += "historyAnalex";
@@ -800,6 +802,12 @@
             document.getElementById(appendId).appendChild(div);
 
             General.showHistoryAnalexSlides(1);
+        },
+        deleteHistory: function () {
+            var allHistory = this.getAllHistory();
+            for (var i = 0; i < allHistory.length; i++) {
+                allHistory[i].remove();
+            }
         },
         drawImage: function (canvas, context, image) {
             canvas.width = image.width;
@@ -894,13 +902,29 @@
             return false;
         },
         onUserCodePaste: function (e) {
+            if (!document.getElementById("recompileButton").hasAttribute("hidden"))
+                return;
+
+            if (this.getEntireCurrentCode().length !== 0) {
+                document.getElementById("recompileButton").removeAttribute("hidden");
+                return;
+            }
             var code = (e.originalEvent || e).clipboardData.getData('text/plain');
             this.analyseEntireCode(code);
         },
         onUserCodeKeyPress: function (e) {
+            if (!document.getElementById("recompileButton").hasAttribute("hidden"))
+                return;
             var key = repeatWord;
             if (e !== undefined) {
                 key = e.key;
+
+                var entireCodeBefore = this.getEntireCode();
+                var entireCodeCurrent = this.getEntireCurrentCode();
+                if (entireCodeBefore.indexOf(entireCodeCurrent) !== 0) {
+                    document.getElementById("recompileButton").removeAttribute("hidden");
+                    return;
+                }
             }
             this.startAnalysis(key);
             if (repeatWord !== "")
@@ -909,54 +933,51 @@
         onUserCodeKeyUp: function (e) {
             var key = e.key;
             if (key === "Backspace") {
-                debugger
                 var entireCodeBefore = this.getEntireCode();
                 var entireCodeCurrent = this.getEntireCurrentCode();
                 var parentOfHistory = document.getElementById("slideshow_child");
                 var images = this.getAllHistory();
-                var indexOfImageToModify = 0;
                 var word = "";
 
                 if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
-                    word = this.getWord(); //get current word ------- COMO SABER A POSIÇÃO ATUAL DA EDIÇÃO???
-                    indexOfImageToModify = images.length - 1;
-                    if (word === "") { //means that the current is in history already
+                    word = this.getWord();
+                    var lastImage = images[images.length - 1];
+                    if (word === "") {
                         if (images.length > 0) {
-                            var lastImage = images[indexOfImageToModify];
-                            word = lastImage.getAttribute("word"); //get last word
-                            parentOfHistory.removeChild(parentOfHistory.children[indexOfImageToModify]);
+                            word = lastImage.getAttribute("word");
+                            parentOfHistory.removeChild(parentOfHistory.lastChild);
                         }
                     }
 
                     this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
-                }
-                else if (entireCodeBefore.indexOf(entireCodeCurrent) === 1) {
-                    indexOfImageToModify = 0;
-                    if (images.length > 0) {
-                        var lastImage = images[indexOfImageToModify];
-                        word = lastImage.getAttribute("word"); //get last word
-                        parentOfHistory.removeChild(parentOfHistory.children[indexOfImageToModify]);
-                    } else {
-                        word = this.getWord();
+
+                    word = this.getWord();
+
+                    if (word === "") {
+                        if (images.length > 0) {
+                            word = lastImage.getAttribute("word");
+                            parentOfHistory.removeChild(parentOfHistory.lastChild);
+                        }
                     }
-                    this.setElementAttribute("state", "word", word.substring(1, word.length));
+
+                    this.clearCanvas();
+                    this.resetStateAttributes();
+                    this.analyseEntireCode(word);
+                    this.setElementAttribute("state", "entire_code", entireCodeCurrent);
                 }
-
-                word = this.getWord(); //get alteraded word
-
-                if (word === "") {
-                    if (images.length > 0) {
-                        var lastImage = images[indexOfImageToModify];//images.length - 1];
-                        word = lastImage.getAttribute("word"); //get last word
-                        parentOfHistory.removeChild(parentOfHistory.children[indexOfImageToModify]);//lastChild);
-                    }
+                else {
+                    document.getElementById("recompileButton").removeAttribute("hidden");
                 }
-
-                this.clearCanvas();
-                this.resetStateAttributes();
-                this.analyseEntireCode(word); //analyse word
-                this.setElementAttribute("state", "entire_code", entireCodeCurrent);
             }
+        },
+        onRecompileClick: function () {
+            this.deleteHistory();
+            this.clearCanvas();
+            this.resetStateAttributes();
+            this.setElementAttribute("state", "entire_code", "");
+            var entireCode = this.getEntireCurrentCode();
+            this.analyseEntireCode(entireCode);
+            document.getElementById("recompileButton").setAttribute("hidden", "hidden");
         },
         resetStateAttributes: function () {
             this.setElementAttribute("state", "word", "");

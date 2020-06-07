@@ -19,10 +19,10 @@
     display: none;
     width: 100%;
     height: 100%;
-    text-align:center;
+    text-align: center;
 }
 
-.dinamicHeight{
+.dinamicHeight {
     height: 35vh;
 }
 
@@ -85,6 +85,19 @@
     text-align: center;
 }
 
-.minimalMargin{
+.minimalMargin {
     margin-top: 1%;
+}
+
+#userCodeHeader {
+    padding: inherit;
+    padding-bottom: 3%;
+}
+
+#userCodeLabel {
+    width: 70%;
+}
+
+#recompileButton {
+    width: 30%;
 }

@@ -33,7 +33,10 @@
     <div class="container">
         <div class="row">
             <div class="col-4">
-                <label>SEU CÓDIGO EM D+</label>
+                <div id="userCodeHeader" class="row">
+                    <label id="userCodeLabel">SEU CÓDIGO EM D+</label>
+                    <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()" >Recompile</button>
+                </div>
                 <textarea id="userCode"
                           onpaste="LexicalAnalysis.onUserCodePaste(event)"
                           onkeypress="LexicalAnalysis.onUserCodeKeyPress(event)"
