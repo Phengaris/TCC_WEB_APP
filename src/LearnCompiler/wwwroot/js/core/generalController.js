@@ -25,8 +25,11 @@
             for (i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
             }
-           
-            slides[slideIndex - 1].style.display = "block";
+            var currentSlide = slides[slideIndex - 1];
+
+            currentSlide.style.display = "block";
+            currentSlide.children[0].children[0].textContent = slideIndex + '/' + slides.length;
+
         }
     }
 };

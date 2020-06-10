@@ -23,7 +23,11 @@
 }
 
 .dinamicHeight {
-    height: 35vh;
+    height: 40vh;
+}
+
+.dinamicMinHeight {
+    min-height: 40vh;
 }
 
 .fullWidth {
@@ -36,7 +40,7 @@
 
 #canvas {
     width: auto;
-    height: 90%;
+    max-height: 35vh;
     max-width: 90%;
     margin-top: 3vh;
 }
@@ -52,7 +56,8 @@
 }
 
 .historyImgAnalex {
-    height: 90%;
+    max-height: 90%;
+    max-width: 90%;
 }
 
 .prev, .next {
@@ -86,7 +91,12 @@
 }
 
 .minimalMargin {
-    margin-top: 1%;
+    margin-top: 5%;
+}
+
+#userCode{
+    width: 100%;
+    height: 95%;
 }
 
 #userCodeHeader {
@@ -100,4 +110,8 @@
 
 #recompileButton {
     width: 30%;
+}
+
+#errorButton {
+    background-color: tomato;
 }

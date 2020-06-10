@@ -4,6 +4,7 @@
 
 <script src="~/js/core/lexicalAnalysisController.js"></script>
 <script src="~/js/core/generalController.js"></script>
+<script src="~/js/core/errorController.js"></script>
 <link href="~/css/general.css" rel="stylesheet" />
 <div hidden="hidden">
     <img id="character_diagram" src="~/img/Diagrams/character_diagram.png" />
@@ -12,6 +13,7 @@
     <img id="space_diagram" src="~/img/Diagrams/space_diagram.png" />
     <img id="exclusive_table_diagram" src="~/img/Diagrams/exclusive_table_diagram.png" />
     <img id="equal_diagram" src="~/img/Diagrams/equal_diagram.png" />
+    <img id="error_invalid_character_diagram"  src="~/img/Diagrams/error_invalid_character_diagram.png" />
     <img id="bigger_then_diagram" src="~/img/Diagrams/bigger_then_diagram.png" />
     <img id="less_then_diagram" src="~/img/Diagrams/less_then_diagram.png" />
     <img id="multiplication_diagram" src="~/img/Diagrams/multiplication_diagram.png" />
@@ -31,25 +33,24 @@
 
 <body>
     <div class="container">
-        <div class="row">
+        <div class="row dinamicMinHeight">
             <div class="col-4">
                 <div id="userCodeHeader" class="row">
                     <label id="userCodeLabel">SEU CÓDIGO EM D+</label>
-                    <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()" >Recompile</button>
+                    <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompile</button>
                 </div>
                 <textarea id="userCode"
                           onpaste="LexicalAnalysis.onUserCodePaste(event)"
                           onkeypress="LexicalAnalysis.onUserCodeKeyPress(event)"
                           onkeyup="LexicalAnalysis.onUserCodeKeyUp(event)"
-                          class="fullWidth dinamicHeight"
                           placeholder="Escreva o seu código aqui.."></textarea>
             </div>
-            <div class="col-8 dinamicHeight row">
+            <div class="col-8 row">
                 <div class="fullWidth">
                     <button class="tabLink" onclick="General.openTab('lexicalAnalysis', this, 'darkturquoise')" id="defaultOpen">Análise Léxica</button>
                     <button class="tabLink" onclick="General.openTab('syntaxAnalisys', this, 'darkturquoise')">Análise Sintática</button>
                     <button class="tabLink" onclick="General.openTab('symbolTable', this, 'darkturquoise')">Tabela de Símbolos</button>
-                    <button class="tabLink" onclick="General.openTab('generatedErrors', this, 'crimson')" hidden="hidden">Erros</button>
+                    <button class="tabLink" onclick="General.openTab('generatedErrors', this, 'crimson')" hidden="hidden" id="errorButton">Erros</button>
                 </div>
 
                 <div id="lexicalAnalysis" class="tabContent">

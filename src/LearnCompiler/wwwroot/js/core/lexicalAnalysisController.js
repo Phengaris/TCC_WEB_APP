@@ -372,50 +372,50 @@
                 {
                     case_start: "1",
                     case_end: "10",
-                    width_start: [0],
-                    width_end: [965],
-                    height_start: [559],
-                    height_end: [884]
+                    width_start: [0, 895, 895, 917],
+                    width_end: [895, 917, 917, 965],
+                    height_start: [330, 359, 390, 330],
+                    height_end: [656, 390, 656, 656]
                 },
                 {
                     case_start: "10",
                     case_end: "10",
-                    width_start: [0],
+                    width_start: [639],
                     width_end: [965],
-                    height_start: [559],
-                    height_end: [884]
+                    height_start: [0],
+                    height_end: [656]
                 },
                 {
                     case_start: "10",
                     case_end: "TABELA_EXCLUSIVOS",
-                    width_start: [0],
-                    width_end: [965],
-                    height_start: [559],
-                    height_end: [884]
+                    width_start: [639, 895, 895, 917],
+                    width_end: [895, 917, 917, 1868],
+                    height_start: [330, 359, 390, 330],
+                    height_end: [656, 390, 656, 656]
                 },
                 {
                     case_start: "1",
                     case_end: "11",
-                    width_start: [0],
-                    width_end: [965],
-                    height_start: [559],
-                    height_end: [884]
+                    width_start: [0, 253, 253, 280],
+                    width_end: [253, 280, 280, 325],
+                    height_start: [331, 1235, 331, 331],
+                    height_end: [1295, 1268, 1235, 1295]
                 },
                 {
                     case_start: "11",
                     case_end: "11",
                     width_start: [0],
-                    width_end: [965],
-                    height_start: [559],
-                    height_end: [884]
+                    width_end: [325],
+                    height_start: [970],
+                    height_end: [1520]
                 },
                 {
                     case_start: "11",
                     case_end: "10",
-                    width_start: [0],
-                    width_end: [965],
-                    height_start: [559],
-                    height_end: [884]
+                    width_start: [0, 253, 253, 280, 639, 895, 895, 917],
+                    width_end: [253, 280, 280, 930, 895, 917, 917, 965],
+                    height_start: [970, 1235, 970, 665, 330, 359, 390, 330],
+                    height_end: [1295, 1268, 1235, 1235, 665, 390, 665, 665]
                 },
             ]
         },
@@ -427,6 +427,19 @@
                     case_end: "OP_DIVI",
                     width_start: [0],
                     width_end: [1124],
+                    height_start: [0],
+                    height_end: [324]
+                }
+            ]
+        },
+        {
+            img_id: "error_invalid_character_diagram",
+            coordinates: [
+                {
+                    case_start: "1",
+                    case_end: "ERRO_CARACTERE_INVALIDO",
+                    width_start: [0],
+                    width_end: [1644],
                     height_start: [0],
                     height_end: [324]
                 }
@@ -494,6 +507,7 @@
         { lexeme: "NOT", token: "PR_NOT" }
     ];
     var separators = [" ", "Enter", "Tab"];
+    var validCharactersRegex = /^[ ,;()+*'"><=_/a-zA-Z0-9[\-\]]+$/;
     return {
         analysis: function (character) {
             var state = this.getState();
@@ -636,8 +650,11 @@
                 this.setElementAttribute("state", "state", "11");
             else if ("/" === character)
                 this.setElementAttribute("state", "state", "12");
-            //else
-            //    Console.WriteLine("Foi impossível mapear o character {0}!", character);
+            else {
+                this.setElementAttribute("state", "state", "ERRO_CARACTERE_INVALIDO");
+                var error = "Foi impossível mapear o character '" + character + "'!";
+                ErrorManager.addError(error);
+            }
         },
         analysisCase2: function (character) {
             if (Number.isInteger(parseInt(character)))
@@ -656,7 +673,8 @@
                 if (this.getLastChar() === ".") {
                     repeatWord = character;
                     this.setElementAttribute("state", "state", "ERRO_NUM_REAL");
-                    var error = "Erro no caractere " + character + ". No presente contexto o valor" + character + " deve ser um número.";
+                    var error = "Erro no lexema '" + this.getWord() + "' . O lexema esperava um número e recebeu o valor  '" + character + "'";
+                    ErrorManager.addError(error);
                 } else {
                     repeatWord = character;
                     this.setElementAttribute("state", "state", "NUM_REAL");
@@ -671,7 +689,8 @@
             else {
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE");
-                var error = "Erro no caractere " + character + ". O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
+                var error = "Erro no lexema '" + this.getWord() + "'. O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
+                ErrorManager.addError(error);
             }
         },
         analysisCase5: function (character) {
@@ -680,7 +699,8 @@
             else {
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE");
-                var error = "Erro no caractere " + character + ". O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
+                var error = "Erro no lexema '" + this.getWord() + "'. O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
+                ErrorManager.addError(error);
             }
         },
         analysisCase6: function (character) {
@@ -691,7 +711,8 @@
             else {
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_STRING");
-                var error = "Erro no caractere " + character + ". O tipo string suporta 0 ou mais dígitos e deve ser fechado com aspas duplas."
+                var error = "Erro no lexema '" + this.getWord() + "'. O tipo string suporta 0 ou mais dígitos e deve ser fechado com aspas duplas."
+                ErrorManager.addError(error);
             }
         },
         analysisCase7: function (character) {
@@ -787,16 +808,27 @@
             image.src = canvas.toDataURL();
             image.className += "historyImgAnalex";
 
+            var text_row = document.createElement("div");
+            text_row.className += "row";
+
+            var text_history_count = document.createElement("div");
+            text_history_count.className += "position-absolute";
+
             var text_div = document.createElement("div");
             text_div.className += "text";
             if (token !== "")
                 text_div.textContent = "Lexema: " + word + " | Token: " + token;
 
+            text_row.appendChild(text_history_count);
+            text_row.appendChild(text_div);
+
+
             var div = document.createElement("div");
             div.className += "historyAnalex";
             div.setAttribute("word", word);
+            div.setAttribute("token", token);
 
-            div.appendChild(text_div);
+            div.appendChild(text_row);
             div.appendChild(image);
 
             document.getElementById(appendId).appendChild(div);
@@ -918,13 +950,15 @@
             var key = repeatWord;
             if (e !== undefined) {
                 key = e.key;
-
                 var entireCodeBefore = this.getEntireCode();
                 var entireCodeCurrent = this.getEntireCurrentCode();
                 if (entireCodeBefore.indexOf(entireCodeCurrent) !== 0) {
                     document.getElementById("recompileButton").removeAttribute("hidden");
                     return;
                 }
+
+                if (key.length === 1)
+                    this.setElementAttribute("state", "entire_code", this.getEntireCode() + key);
             }
             this.startAnalysis(key);
             if (repeatWord !== "")
@@ -975,6 +1009,7 @@
             this.clearCanvas();
             this.resetStateAttributes();
             this.setElementAttribute("state", "entire_code", "");
+            ErrorManager.clearErrors();
             var entireCode = this.getEntireCurrentCode();
             this.analyseEntireCode(entireCode);
             document.getElementById("recompileButton").setAttribute("hidden", "hidden");
@@ -1016,10 +1051,8 @@
 
                 this.dyeImage(canvas, context, coordinates);
 
-                if (!needRepeat) {
+                if (!needRepeat)
                     this.setElementAttribute("state", "word", word + key);
-                    this.setElementAttribute("state", "entire_code", this.getEntireCode() + key);
-                }
                 if (state === "SEPARADOR" && !needRepeat)
                     return;
                 if (!Number.isInteger(parseInt(state))) {
