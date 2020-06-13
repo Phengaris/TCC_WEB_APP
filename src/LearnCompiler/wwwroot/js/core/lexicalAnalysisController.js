@@ -790,10 +790,51 @@
                 repeatWord = character;
         },
         analyseEntireCode: function (code) {
+            var isRepeat = false;
             for (var i = 0; i < code.length; i++) {
-                this.startAnalysis(code[i]);
-                if (repeatWord !== "")
+                this.startAnalysis(code[i], isRepeat);
+                if (repeatWord !== "") {
+                    isRepeat = true;
                     --i;
+                } else {
+                    isRepeat = false;
+                }
+            }
+        },
+        backspaceEvent: function () {
+            var entireCodeBefore = this.getEntireCode();
+            var entireCodeCurrent = this.getEntireCurrentCode();
+            var parentOfHistory = document.getElementById("slideshow_child");
+            var images = this.getAllHistory();
+            var word = "";
+
+            if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
+                word = this.getWord();
+                var lastImage = images[images.length - 1];
+                if (word === "") {
+                    if (images.length > 0) {
+                        word = lastImage.getAttribute("word");
+                        parentOfHistory.removeChild(parentOfHistory.lastChild);
+                    }
+                }
+
+                this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
+
+                word = this.getWord();
+
+                if (word === "") {
+                    if (images.length > 0) {
+                        word = lastImage.getAttribute("word");
+                        parentOfHistory.removeChild(parentOfHistory.lastChild);
+                    }
+                }
+
+                this.clearCanvas();
+                this.resetStateAttributes();
+                this.analyseEntireCode(word);
+            }
+            else {
+                document.getElementById("recompileButton").removeAttribute("hidden");
             }
         },
         clearCanvas: function () {
@@ -837,7 +878,7 @@
         },
         deleteHistory: function () {
             var allHistory = this.getAllHistory();
-            for (var i = 0; i < allHistory.length; i++) {
+            for (var i = allHistory.length - 1; i >= 0; --i) {
                 allHistory[i].remove();
             }
         },
@@ -883,10 +924,14 @@
             );
         },
         getEntireCode: function () {
-            return document.getElementById("state").getAttribute("entire_code");
+            var code = document.getElementById("state").getAttribute("entire_code");
+            code = this.replaceCharByCode(code);
+            return code;
         },
         getEntireCurrentCode: function () {
-            return document.getElementById("userCode").value;
+            var code = document.getElementById("userCode").textContent;
+            code = this.replaceCharByCode(code);
+            return code;
         },
         getImage: function (imageId) {
             return document.getElementById(imageId);
@@ -944,64 +989,27 @@
             var code = (e.originalEvent || e).clipboardData.getData('text/plain');
             this.analyseEntireCode(code);
         },
-        onUserCodeKeyPress: function (e) {
-            if (!document.getElementById("recompileButton").hasAttribute("hidden"))
+        onUserCodeKeyUp: function (e) {
+            var key = e.key;
+            if (e.ctrlKey)
                 return;
-            var key = repeatWord;
-            if (e !== undefined) {
-                key = e.key;
+
+            if (key === "Backspace") {
+                this.backspaceEvent();
+            } else if (key === "Enter" || key.length === 1) {
+                if (!document.getElementById("recompileButton").hasAttribute("hidden"))
+                    return;
+
                 var entireCodeBefore = this.getEntireCode();
                 var entireCodeCurrent = this.getEntireCurrentCode();
-                if (entireCodeBefore.indexOf(entireCodeCurrent) !== 0) {
+                if (entireCodeCurrent.indexOf(entireCodeBefore) !== 0) {
                     document.getElementById("recompileButton").removeAttribute("hidden");
                     return;
                 }
 
-                if (key.length === 1)
-                    this.setElementAttribute("state", "entire_code", this.getEntireCode() + key);
-            }
-            this.startAnalysis(key);
-            if (repeatWord !== "")
-                this.onUserCodeKeyPress();
-        },
-        onUserCodeKeyUp: function (e) {
-            var key = e.key;
-            if (key === "Backspace") {
-                var entireCodeBefore = this.getEntireCode();
-                var entireCodeCurrent = this.getEntireCurrentCode();
-                var parentOfHistory = document.getElementById("slideshow_child");
-                var images = this.getAllHistory();
-                var word = "";
-
-                if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
-                    word = this.getWord();
-                    var lastImage = images[images.length - 1];
-                    if (word === "") {
-                        if (images.length > 0) {
-                            word = lastImage.getAttribute("word");
-                            parentOfHistory.removeChild(parentOfHistory.lastChild);
-                        }
-                    }
-
-                    this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
-
-                    word = this.getWord();
-
-                    if (word === "") {
-                        if (images.length > 0) {
-                            word = lastImage.getAttribute("word");
-                            parentOfHistory.removeChild(parentOfHistory.lastChild);
-                        }
-                    }
-
-                    this.clearCanvas();
-                    this.resetStateAttributes();
-                    this.analyseEntireCode(word);
-                    this.setElementAttribute("state", "entire_code", entireCodeCurrent);
-                }
-                else {
-                    document.getElementById("recompileButton").removeAttribute("hidden");
-                }
+                this.startAnalysis(key, false);
+                if (repeatWord !== "")
+                    this.repeatWordEvent();
             }
         },
         onRecompileClick: function () {
@@ -1014,6 +1022,17 @@
             this.analyseEntireCode(entireCode);
             document.getElementById("recompileButton").setAttribute("hidden", "hidden");
         },
+        repeatWordEvent: function () {
+            if (!document.getElementById("recompileButton").hasAttribute("hidden"))
+                return;
+            this.startAnalysis(repeatWord, true);
+            if (repeatWord !== "")
+                this.repeatWordEvent();
+        },
+        replaceCharByCode: function (text) {
+            var backspaceRgx = new RegExp(String.fromCharCode(160), 'g');
+            return text.replace(backspaceRgx, " ");
+        },
         resetStateAttributes: function () {
             this.setElementAttribute("state", "word", "");
             this.setElementAttribute("state", "state", "1");
@@ -1022,7 +1041,10 @@
         setElementAttribute: function (id, attribute, value) {
             document.getElementById(id).setAttribute(attribute, value);
         },
-        startAnalysis: function (key) {
+        startAnalysis: function (key, isRepeat) {
+            if (!isRepeat)
+                this.setElementAttribute("state", "entire_code", this.getEntireCurrentCode());
+
             var needRepeat = true;
             repeatWord = "";
 

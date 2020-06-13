@@ -13,7 +13,7 @@
     <img id="space_diagram" src="~/img/Diagrams/space_diagram.png" />
     <img id="exclusive_table_diagram" src="~/img/Diagrams/exclusive_table_diagram.png" />
     <img id="equal_diagram" src="~/img/Diagrams/equal_diagram.png" />
-    <img id="error_invalid_character_diagram"  src="~/img/Diagrams/error_invalid_character_diagram.png" />
+    <img id="error_invalid_character_diagram" src="~/img/Diagrams/error_invalid_character_diagram.png" />
     <img id="bigger_then_diagram" src="~/img/Diagrams/bigger_then_diagram.png" />
     <img id="less_then_diagram" src="~/img/Diagrams/less_then_diagram.png" />
     <img id="multiplication_diagram" src="~/img/Diagrams/multiplication_diagram.png" />
@@ -39,11 +39,10 @@
                     <label id="userCodeLabel">SEU CÓDIGO EM D+</label>
                     <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompile</button>
                 </div>
-                <textarea id="userCode"
-                          onpaste="LexicalAnalysis.onUserCodePaste(event)"
-                          onkeypress="LexicalAnalysis.onUserCodeKeyPress(event)"
-                          onkeyup="LexicalAnalysis.onUserCodeKeyUp(event)"
-                          placeholder="Escreva o seu código aqui.."></textarea>
+                <div id="userCode"
+                     contenteditable="true"
+                     onpaste="LexicalAnalysis.onUserCodePaste(event)"
+                     onkeyup="LexicalAnalysis.onUserCodeKeyUp(event)"></div>
             </div>
             <div class="col-8 row">
                 <div class="fullWidth">
