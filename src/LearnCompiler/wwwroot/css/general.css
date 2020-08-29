@@ -96,7 +96,6 @@
 
 #userCode {
     width: 100%;
-    height: 95%;
     border: 1px solid #d3d3d3;
 }
 
@@ -115,4 +114,38 @@
 
 #errorButton {
     background-color: tomato;
+}
+
+#container {
+    position: relative;
+}
+#highlighterContainer {
+    position: absolute;
+    width: 100%;
+    height: 95%;
+    left: 0;
+    top: 0;
+    cursor: text
+}
+#inputContainer {
+    position: absolute;
+    width: 100%;
+    height: 95%;
+    left: 0;
+    top: 0;
+}
+#highlighter {
+    padding: 7px;
+    color: #eeeeee;
+    background-color: #ffffff;
+    margin: 0px;
+    font-size: 11px;
+    font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+textarea {
+    background-color: transparent;
+    padding: 5px;
+    margin: 0px;
+    font-size: 11px;
+    font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
 }

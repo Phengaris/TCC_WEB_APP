@@ -5,6 +5,7 @@
 <script src="~/js/core/lexicalAnalysisController.js"></script>
 <script src="~/js/core/generalController.js"></script>
 <script src="~/js/core/errorController.js"></script>
+<script src="~/js/components/textBoxComponent.js"></script>
 <link href="~/css/general.css" rel="stylesheet" />
 <div hidden="hidden">
     <img id="character_diagram" src="~/img/Diagrams/character_diagram.png" />
@@ -28,7 +29,7 @@
 
 <div hidden="hidden">
     <span id="state" state="1" state_init="1" word="" token="" entire_code=""></span>
-    <span id="error" list='[{"error_display":"erro"}]'></span>
+    <span id="error" list='[]'></span>
 </div>
 
 <body>
@@ -39,17 +40,23 @@
                     <label id="userCodeLabel">SEU CÓDIGO EM D+</label>
                     <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompile</button>
                 </div>
-                <div id="userCode"
-                     contenteditable="true"
-                     onpaste="LexicalAnalysis.onUserCodePaste(event)"
-                     onkeyup="LexicalAnalysis.onUserCodeKeyUp(event)"></div>
+                <div id="container">
+                    <div id="highlighterContainer" onclick="TextBoxComponent.onClick()">
+                        <div id="highlighter" class="row"></div>
+                    </div>
+                    <div id="inputContainer">
+                        <textarea id="userCode"
+                                  onkeyup="TextBoxComponent.onKeyUp(event)"
+                                  onpaste="TextBoxComponent.onPaste(event)"></textarea>
+                    </div>
+                </div>
             </div>
             <div class="col-8 row">
                 <div class="fullWidth">
                     <button class="tabLink" onclick="General.openTab('lexicalAnalysis', this, 'darkturquoise')" id="defaultOpen">Análise Léxica</button>
                     <button class="tabLink" onclick="General.openTab('syntaxAnalisys', this, 'darkturquoise')">Análise Sintática</button>
                     <button class="tabLink" onclick="General.openTab('symbolTable', this, 'darkturquoise')">Tabela de Símbolos</button>
-                    <button class="tabLink" onclick="General.openTab('generatedErrors', this, 'crimson')" hidden="hidden" id="errorButton">Erros</button>
+                    <button class="tabLink" onclick="General.openTab('generatedErrors', this, 'crimson')" hidden="hidden" id="generatedErrorsButton">Erros</button>
                 </div>
 
                 <div id="lexicalAnalysis" class="tabContent">
@@ -84,6 +91,9 @@
         </div>
     </div>
     <script>
+        window.onload = function () {
+            TextBoxComponent.init()
+        };
         document.getElementById("defaultOpen").click();
     </script>
 </body>

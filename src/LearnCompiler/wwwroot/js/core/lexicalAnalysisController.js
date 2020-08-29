@@ -507,7 +507,6 @@
         { lexeme: "NOT", token: "PR_NOT" }
     ];
     var separators = [" ", "Enter", "Tab"];
-    var validCharactersRegex = /^[ ,;()+*'"><=_/a-zA-Z0-9[\-\]]+$/;
     return {
         analysis: function (character) {
             var state = this.getState();
@@ -653,7 +652,7 @@
             else {
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE_INVALIDO");
                 var error = "Foi impossível mapear o character '" + character + "'!";
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, this.getWord());
             }
         },
         analysisCase2: function (character) {
@@ -674,7 +673,7 @@
                     repeatWord = character;
                     this.setElementAttribute("state", "state", "ERRO_NUM_REAL");
                     var error = "Erro no lexema '" + this.getWord() + "' . O lexema esperava um número e recebeu o valor  '" + character + "'";
-                    ErrorManager.addError(error);
+                    ErrorManager.addError(error, this.getWord());
                 } else {
                     repeatWord = character;
                     this.setElementAttribute("state", "state", "NUM_REAL");
@@ -690,7 +689,7 @@
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE");
                 var error = "Erro no lexema '" + this.getWord() + "'. O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, this.getWord());
             }
         },
         analysisCase5: function (character) {
@@ -700,7 +699,7 @@
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE");
                 var error = "Erro no lexema '" + this.getWord() + "'. O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, this.getWord());
             }
         },
         analysisCase6: function (character) {
@@ -712,7 +711,7 @@
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_STRING");
                 var error = "Erro no lexema '" + this.getWord() + "'. O tipo string suporta 0 ou mais dígitos e deve ser fechado com aspas duplas."
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, this.getWord());
             }
         },
         analysisCase7: function (character) {
@@ -807,34 +806,41 @@
             var parentOfHistory = document.getElementById("slideshow_child");
             var images = this.getAllHistory();
             var word = "";
-
-            if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
-                word = this.getWord();
-                var lastImage = images[images.length - 1];
-                if (word === "") {
-                    if (images.length > 0) {
-                        word = lastImage.getAttribute("word");
-                        parentOfHistory.removeChild(parentOfHistory.lastChild);
-                    }
-                }
-
-                this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
-
-                word = this.getWord();
-
-                if (word === "") {
-                    if (images.length > 0) {
-                        word = lastImage.getAttribute("word");
-                        parentOfHistory.removeChild(parentOfHistory.lastChild);
-                    }
-                }
-
+            if (entireCodeCurrent === "") {
                 this.clearCanvas();
                 this.resetStateAttributes();
-                this.analyseEntireCode(word);
+                this.deleteHistory();
+                this.setElementAttribute("state", "entire_code", "");
+                ErrorManager.clearErrors();
             }
             else {
-                document.getElementById("recompileButton").removeAttribute("hidden");
+                if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
+                    word = this.getWord();
+                    var lastImage = images[images.length - 1];
+                    if (word === "") {
+                        if (images.length > 0) {
+                            word = lastImage.getAttribute("word");
+                            parentOfHistory.removeChild(parentOfHistory.lastChild);
+                        }
+                    }
+
+                    this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
+
+                    word = this.getWord();
+
+                    if (word === "") {
+                        if (images.length > 0) {
+                            word = lastImage.getAttribute("word");
+                            parentOfHistory.removeChild(parentOfHistory.lastChild);
+                        }
+                    }
+
+                    this.clearCanvas();
+                    this.resetStateAttributes();
+                    this.analyseEntireCode(word);
+                } else {
+                    document.getElementById("recompileButton").removeAttribute("hidden");
+                }
             }
         },
         clearCanvas: function () {
@@ -850,7 +856,6 @@
             image.className += "historyImgAnalex";
 
             var text_row = document.createElement("div");
-            text_row.className += "row";
 
             var text_history_count = document.createElement("div");
             text_history_count.className += "position-absolute";
@@ -924,14 +929,10 @@
             );
         },
         getEntireCode: function () {
-            var code = document.getElementById("state").getAttribute("entire_code");
-            code = this.replaceCharByCode(code);
-            return code;
+            return document.getElementById("state").getAttribute("entire_code");
         },
         getEntireCurrentCode: function () {
-            var code = document.getElementById("userCode").textContent;
-            code = this.replaceCharByCode(code);
-            return code;
+            return document.getElementById("userCode").value;
         },
         getImage: function (imageId) {
             return document.getElementById(imageId);
@@ -1029,10 +1030,6 @@
             if (repeatWord !== "")
                 this.repeatWordEvent();
         },
-        replaceCharByCode: function (text) {
-            var backspaceRgx = new RegExp(String.fromCharCode(160), 'g');
-            return text.replace(backspaceRgx, " ");
-        },
         resetStateAttributes: function () {
             this.setElementAttribute("state", "word", "");
             this.setElementAttribute("state", "state", "1");
@@ -1053,12 +1050,14 @@
             var canvas = document.getElementById("canvas");
             var context = canvas.getContext("2d");
 
+            var state = this.getState();
+
             this.analysis(key);
 
             if (repeatWord === "")
                 needRepeat = false;
 
-            var state = this.getState();
+            state = this.getState();
 
             if (state !== "1") {
                 var img_id = this.getImageId(state);

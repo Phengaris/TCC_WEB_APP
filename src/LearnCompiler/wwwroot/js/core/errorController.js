@@ -1,11 +1,10 @@
 ﻿var ErrorController = function () {
     return {
-        addError: function (errorText) {
+        addError: function (errorText, word) {
             var divError = document.getElementById("generatedErrors");
             divError.removeAttribute("hidden");
 
-            var buttonError = document.getElementById("errorButton");
-            buttonError.removeAttribute("hidden");
+            document.getElementById("generatedErrorsButton").removeAttribute("hidden");
 
             var tagError = document.createElement("p");
             tagError.textContent = errorText;
@@ -19,8 +18,7 @@
                 divError.children[i].remove();
             }
 
-            var buttonError = document.getElementById("errorButton");
-            buttonError.setAttribute("hidden", "hidden");
+            document.getElementById("generatedErrorsButton").setAttribute("hidden", "hidden");
         }
     }
 };
