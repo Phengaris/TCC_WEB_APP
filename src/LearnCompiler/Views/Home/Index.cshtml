@@ -5,6 +5,7 @@
 <script src="~/js/core/lexicalAnalysisController.js"></script>
 <script src="~/js/core/generalController.js"></script>
 <script src="~/js/core/errorController.js"></script>
+<script src="~/js/core/symbolTableController.js"></script>
 <script src="~/js/components/textBoxComponent.js"></script>
 <link href="~/css/general.css" rel="stylesheet" />
 <div hidden="hidden">
@@ -69,6 +70,16 @@
                 </div>
 
                 <div id="symbolTable" class="tabContent">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Token</th>
+                                <th scope="col">Lexema</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div id="generatedErrors" class="tabContent" hidden="hidden">

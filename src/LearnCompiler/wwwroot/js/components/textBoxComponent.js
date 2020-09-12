@@ -1,8 +1,7 @@
 ﻿var TextBox = function () {
     var highlightedTokens = ["12. "];
-    var invalidCharactersRegex = /(?!([ \.,;()+*'"><=_a-zA-Z0-9[\-\]]))./gm;
-    var invalidRealRegex = /((?![0-9])\.(?![0-9]))./gm
-    //var invalidCharRegex = /('(?!))./gm
+    var invalidRegex = /((?![0-9])\.(?![0-9]))|([^0-9]\.[0-9])|([0-9]\.(?![0-9]))|[^ \.,;()+*'"><=_a-zA-Z0-9[\-\]\n]+/gm;
+    var invalidCharRegex = /('[^']{0,1}?')|('(?![^']{0,1}?').)/gm
     var highlighterContainer = undefined;
     var inputContainer = undefined;
     var textArea = undefined;
@@ -14,9 +13,9 @@
             // replace the words by a highlighted version of the words
             var matches = [];
 
-            matches = matches.concat(text.match(invalidCharactersRegex));
-            matches = matches.concat(text.match(invalidRealRegex));
-            matches = matches.filter((v, i) => matches.indexOf(v) === i);
+            matches = matches.concat(text.match(invalidRegex));
+            matches = matches.concat(text.match(invalidCharRegex));
+            matches = matches.filter((v, i) => matches.indexOf(v) === i && v !== null && !v.match(/'[^']{0,1}?'/gm));
 
             for (var i = 0; i < matches.length; i++) {
                 text = text.split(matches[i]).join('<span>' + matches[i] + '</span>');

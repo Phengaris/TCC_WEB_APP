@@ -812,6 +812,7 @@
                 this.deleteHistory();
                 this.setElementAttribute("state", "entire_code", "");
                 ErrorManager.clearErrors();
+                SymbolTableController.clear();
             }
             else {
                 if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
@@ -821,6 +822,9 @@
                         if (images.length > 0) {
                             word = lastImage.getAttribute("word");
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
+                            token = lastImage.getAttribute("token");
+                            if (token.length > 0)
+                                SymbolTableController.delete();
                         }
                     }
 
@@ -832,6 +836,9 @@
                         if (images.length > 0) {
                             word = lastImage.getAttribute("word");
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
+                            token = lastImage.getAttribute("token");
+                            if (token.length > 0)
+                                SymbolTableController.delete();
                         }
                     }
 
@@ -1077,8 +1084,10 @@
                 if (state === "SEPARADOR" && !needRepeat)
                     return;
                 if (!Number.isInteger(parseInt(state))) {
-                    if (state !== "SEPARADOR" && this.getToken() === "")
+                    if (state !== "SEPARADOR" && this.getToken() === "") {
                         this.setElementAttribute("state", "token", state);
+                        SymbolTableController.add();
+                    }
                     this.createImageFromCanvas("slideshow_child", canvas);
                     this.resetStateAttributes();
                 }
