@@ -3,6 +3,7 @@
 }
 
 <script src="~/js/core/lexicalAnalysisController.js"></script>
+<script src="~/js/core/syntaxAnalysisController.js"></script>
 <script src="~/js/core/generalController.js"></script>
 <script src="~/js/core/errorController.js"></script>
 <script src="~/js/core/symbolTableController.js"></script>
@@ -29,8 +30,7 @@
 </div>
 
 <div hidden="hidden">
-    <span id="state" state="1" state_init="1" word="" token="" entire_code=""></span>
-    <span id="error" list='[]'></span>
+    <span id="state" state="1" state_init="1" word="" token="" entire_code="" syntaxFunc="programa" syntaxStep="1"></span>
 </div>
 
 <body>

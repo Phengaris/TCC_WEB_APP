@@ -450,7 +450,6 @@
     var reservedWords = [
         //decl-const
         { lexeme: "CONST", token: "PR_CONST" },
-        { lexeme: "ID", token: "PR_ID" },
         //decl-var
         { lexeme: "VAR", token: "PR_VAR" },
         //espec-tipo
@@ -1084,9 +1083,12 @@
                 if (state === "SEPARADOR" && !needRepeat)
                     return;
                 if (!Number.isInteger(parseInt(state))) {
-                    if (state !== "SEPARADOR" && this.getToken() === "") {
+                    if (state !== "SEPARADOR" && this.getToken() === "")
                         this.setElementAttribute("state", "token", state);
+
+                    if (this.getToken() !== "") {
                         SymbolTableController.add();
+                        SyntaxAnalysisController.callFunction(this.getToken());
                     }
                     this.createImageFromCanvas("slideshow_child", canvas);
                     this.resetStateAttributes();
