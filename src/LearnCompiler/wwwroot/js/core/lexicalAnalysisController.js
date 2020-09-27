@@ -1088,7 +1088,7 @@
 
                     if (this.getToken() !== "") {
                         SymbolTableController.add();
-                        SyntaxAnalysisController.callFunction(this.getToken());
+                        SyntaxAnalysisController.callFunction(this.getToken(), this.getWord());
                     }
                     this.createImageFromCanvas("slideshow_child", canvas);
                     this.resetStateAttributes();
