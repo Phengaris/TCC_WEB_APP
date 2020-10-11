@@ -13,13 +13,20 @@
             }
             div.appendChild(row);
         },
+        removeRowTab: function (rowsCount) {
+            var div = document.getElementById("syntaxAnalisys");
+            for (var i = 0; i < rowsCount; i++) {
+                div.lastChild.remove();
+            }
+        },
         getTabs: function (addTab) {
             var len = Array.from(this.getSyntaxFunc().split(";")).length + addTab;
             return "&emsp;".repeat(len);
         },
-        callFunction: function (token, lexeme) {
+        callFunction: function (token, lexeme, fromLexic = false) {
             var func = this.getLastSyntaxFunc();
             var step = this.getLastSyntaxStep();
+            var success = true;
 
             if (func === "ignore") {
                 this.removeLastSyntaxFunc();
@@ -30,105 +37,108 @@
             switch (func) {
                 //Declarações
                 case "programa":
-                    this.program(step, token, lexeme);
+                    success = this.program(step, token, lexeme);
                     break;
                 case "lista-decl":
-                    this.listDeclarations(step, token, lexeme);
+                    success = this.listDeclarations(step, token, lexeme);
                     break;
                 case "decl":
-                    this.declaration(step, token, lexeme);
+                    success = this.declaration(step, token, lexeme);
                     break;
                 case "decl-const":
-                    this.declareConst(step, token, lexeme);
+                    success = this.declareConst(step, token, lexeme);
                     break;
                 case "decl-var":
-                    this.declareVar(step, token, lexeme);
+                    success = this.declareVar(step, token, lexeme);
                     break;
                 case "espec-tipo":
-                    this.specifyType(step, token, lexeme);
+                    success = this.specifyType(step, token, lexeme);
                     break;
                 case "decl-proc":
-                    this.declareProc(step, token, lexeme);
+                    success = this.declareProc(step, token, lexeme);
                     break;
                 case "decl-func":
-                    this.declareFunc(step, token, lexeme);
+                    success = this.declareFunc(step, token, lexeme);
                     break;
                 case "params":
-                    this.params(step, token, lexeme);
+                    success = this.params(step, token, lexeme);
                     break;
                 case "lista-param":
-                    this.listParam(step, token, lexeme);
+                    success = this.listParam(step, token, lexeme);
                     break;
                 case "param":
-                    this.param(step, token, lexeme);
+                    success = this.param(step, token, lexeme);
                     break;
                 case "mode":
-                    this.mode(step, token, lexeme);
+                    success = this.mode(step, token, lexeme);
                     break;
                 //Comandos
                 case "bloco":
-                    this.block(step, token, lexeme);
+                    success = this.block(step, token, lexeme);
                     break;
                 case "lista-com":
-                    this.commandList(step, token, lexeme);
+                    success = this.commandList(step, token, lexeme);
                     break;
                 case "comando":
-                    this.command(step, token, lexeme);
+                    success = this.command(step, token, lexeme);
                     break;
                 case "com-atrib":
-                    this.commandAtrib(step, token, lexeme);
+                    success = this.commandAtrib(step, token, lexeme);
                     break;
                 case "com-selecao":
-                    this.commandSelection(step, token, lexeme);
+                    success = this.commandSelection(step, token, lexeme);
                     break;
                 case "com-repeticao":
-                    this.commandRepetition(step, token, lexeme);
+                    success = this.commandRepetition(step, token, lexeme);
                     break;
                 case "com-desvio":
-                    this.commandBypass(step, token, lexeme);
+                    success = this.commandBypass(step, token, lexeme);
                     break;
                 case "com-leitura":
-                    this.commandRead(step, token, lexeme);
+                    success = this.commandRead(step, token, lexeme);
                     break;
                 case "com-escrita":
-                    this.commandWrite(step, token, lexeme);
+                    success = this.commandWrite(step, token, lexeme);
                     break;
                 case "cham-proc":
-                    this.callProcedure(step, token, lexeme);
+                    success = this.callProcedure(step, token, lexeme);
                     break;
                 //Expressões
                 case "lista-exp":
-                    this.listExp(step, token, lexeme);
+                    success = this.listExp(step, token, lexeme);
                     break;
                 case "exp":
-                    this.expression(step, token, lexeme);
+                    success = this.expression(step, token, lexeme);
                     break;
                 case "exp-soma":
-                    this.expressionSum(step, token, lexeme);
+                    success = this.expressionSum(step, token, lexeme);
                     break;
                 case "exp-mult":
-                    this.expressionMult(step, token, lexeme);
+                    success = this.expressionMult(step, token, lexeme);
                     break;
                 case "exp-simples":
-                    this.expressionSimple(step, token, lexeme);
+                    success = this.expressionSimple(step, token, lexeme);
                     break;
                 case "literal":
-                    this.literal(step, token, lexeme);
+                    success = this.literal(step, token, lexeme);
                     break;
                 case "cham-func":
-                    this.callFunc(step, token, lexeme);
+                    success = this.callFunc(step, token, lexeme);
                     break;
                 case "args":
-                    this.arguments(step, token, lexeme);
+                    success = this.arguments(step, token, lexeme);
                     break;
                 case "var":
-                    this.variable(step, token, lexeme);
+                    success = this.variable(step, token, lexeme);
                     break;
                 case "lista-var":
-                    this.listVariable(step, token, lexeme);
+                    success = this.listVariable(step, token, lexeme);
                     break;
                 default:
             }
+            if (fromLexic && !success)
+                return this.callFunction(token, lexeme, true);
+            return success;
         },
         setSyntaxFunc: function (func) {
             var state = document.getElementById("state");
@@ -175,6 +185,11 @@
             var splittedFunc = syntaxFunc.split(";");
             splittedFunc.pop();
             this.setSyntaxFunc(splittedFunc.join(";"));
+        },
+        removeLast: function (success) {
+            this.removeLastSyntaxFunc();
+            this.removeLastSyntaxStep();
+            return success;
         },
         setSyntaxStep: function (step) {
             var state = document.getElementById("state");
@@ -226,7 +241,11 @@
                     this.writeInTab("programa");
                     this.concatenateSyntaxFunc("lista-decl");
                     this.concatenateSyntaxStep("1");
-                    this.listDeclarations(this.getLastSyntaxStep(), token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 default:
             }
@@ -240,12 +259,20 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("decl");
                     this.concatenateSyntaxStep("1");
-                    this.declaration(this.getLastSyntaxStep(), token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
                     this.concatenateSyntaxFunc("decl");
                     this.concatenateSyntaxStep("1");
-                    this.declaration(this.getLastSyntaxStep(), token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 default:
             }
@@ -261,22 +288,27 @@
                     //decl-const
                     this.concatenateSyntaxFunc("decl-const");
                     this.concatenateSyntaxStep("1");
-                    this.declareConst(this.getLastSyntaxStep(), token, lexeme);
+                    var isConst = this.callFunction(token, lexeme);
 
                     //decl-var
                     this.concatenateSyntaxFunc("decl-var");
                     this.concatenateSyntaxStep("1");
-                    this.declareVar(this.getLastSyntaxStep(), token, lexeme);
+                    var isVar = this.callFunction(token, lexeme);
 
                     //decl-proc
                     this.concatenateSyntaxFunc("decl-proc");
                     this.concatenateSyntaxStep("1");
-                    this.declareProc(step, token, lexeme);
+                    var isProc = this.callFunction(token, lexeme);
 
                     //decl-func
                     this.concatenateSyntaxFunc("decl-func");
                     this.concatenateSyntaxStep("1");
-                    this.declareFunc(step, token, lexeme);
+                    var isFunc = this.callFunction(token, lexeme);
+
+                    if (!isConst && !isFunc && !isProc && !isVar) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 default:
             }
@@ -290,17 +322,19 @@
                         this.writeInTab("decl-const");
                         this.writeInTab("CONST", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     if ("IDENTIFICADOR" === token) {
                         this.writeInTab("ID", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        return true;
                     } else {
                         //Declaração de Constante esperava IDENTIFICADOR e recebeu um lexeme
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
@@ -309,17 +343,19 @@
                         this.replaceLastSyntaxStep("4");
                         this.concatenateSyntaxFunc("literal");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else {
                         //Declaração de Constante esperava '=' e recebeu um lexeme
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
                     } else {
                         //Declaração de Constante esperava ';' e recebeu um lexeme
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -336,24 +372,28 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("espec-tipo");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
                     this.concatenateSyntaxFunc("lista-var");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme)
+                    var success = this.callFunction(token, lexeme)
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "3":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
                     } else {
                         //Declaração de Variável esperava ';' e recebeu um lexeme
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -368,8 +408,9 @@
                         .find(f => f === token)
                     ) {
                         this.writeInTab("espec-tipo", lexeme);
-                        this.removeLastSyntaxFunc()
-                        this.removeLastSyntaxStep()
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -384,18 +425,28 @@
                         this.writeInTab("decl-proc");
                         this.writeInTab("SUB", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
                     this.concatenateSyntaxFunc("espec-tipo");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "3":
                     if ("IDENTIFICADOR" === token) {
                         this.writeInTab("ID", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
@@ -404,6 +455,9 @@
                         this.replaceLastSyntaxStep("5");
                         this.concatenateSyntaxFunc("params");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "5":
@@ -412,13 +466,17 @@
                         this.replaceLastSyntaxStep("6");
                         this.concatenateSyntaxFunc("bloco");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "6":
                     if ("PR_END_SUB" === token) {
                         this.writeInTab("END-SUB", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
 
@@ -434,18 +492,28 @@
                         this.writeInTab("decl-func");
                         this.writeInTab("FUNCTION", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
                     this.concatenateSyntaxFunc("espec-tipo");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "3":
                     if ("IDENTIFICADOR" === token) {
                         this.writeInTab("ID", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
@@ -454,6 +522,9 @@
                         this.replaceLastSyntaxStep("5");
                         this.concatenateSyntaxFunc("params");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "5":
@@ -462,13 +533,17 @@
                         this.replaceLastSyntaxStep("6");
                         this.concatenateSyntaxFunc("bloco");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "6":
                     if ("PR_END_FUNCTION" === token) {
                         this.writeInTab("END-FUNCTION", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
 
@@ -483,7 +558,12 @@
                     this.writeInTab("params");
                     this.ignoreLastSyntaxFunc();
                     this.concatenateSyntaxFunc("lista-param");
-                    this.concatenateSyntaxFunc("1");
+                    this.concatenateSyntaxStep("1");
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
             }
         },
@@ -496,7 +576,11 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("param");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
                     if ("SIN_V" === token) {
@@ -504,10 +588,9 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("param");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
-                        this.callFunction(token, lexeme);
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -524,28 +607,32 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("espec-tipo");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
                     this.concatenateSyntaxFunc("lista-var");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme)
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "3":
-                    if ("BY" === token) {
+                    if ("PR_BY" === token) {
                         this.writeInTab("BY", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        return true;
                     }
                     break;
                 case "4":
                     if (this.mode().find(f => f === token)) {
                         this.writeInTab("mode", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
                     }
                 default:
             }
@@ -565,12 +652,8 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("lista-com");
                     this.concatenateSyntaxStep("1");
-                    this.commandList(this.getLastSyntaxStep(), token, lexeme);
+                    return this.removeLast(this.callFunction(token, lexeme));
                     break;
-                case "2":
-                    this.removeLastSyntaxFunc();
-                    this.removeLastSyntaxStep();
-                    this.callFunction();
                 default:
             }
         },
@@ -583,12 +666,21 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("comando");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme); //verificar retorno?
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        this.removeRowTab(1);
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
-                    this.removeLastSyntaxFunc(); //chamar comando de novo caso retorno for um comando
-                    this.removeLastSyntaxStep();
-                    this.callFunction(token, lexeme);
+                    this.concatenateSyntaxFunc("comando");
+                    this.concatenateSyntaxStep("1");
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 default:
             }
@@ -604,49 +696,53 @@
                     //cham-proc
                     this.concatenateSyntaxFunc("cham-proc");
                     this.concatenateSyntaxStep("1");
-                    this.callProcedure(this.getLastSyntaxStep(), token, lexeme);
+                    var isProc = this.callProcedure(this.getLastSyntaxStep(), token, lexeme);
 
                     //com-atrib
                     this.concatenateSyntaxFunc("com-atrib");
                     this.concatenateSyntaxStep("1");
-                    this.commandAtrib(this.getLastSyntaxStep(), token, lexeme);
+                    var isAtrib = this.commandAtrib(this.getLastSyntaxStep(), token, lexeme);
 
 
                     //com-selecao
                     this.concatenateSyntaxFunc("com-selecao");
                     this.concatenateSyntaxStep("1");
-                    this.commandSelection(this.getLastSyntaxStep(), token, lexeme);
+                    var isSelect = this.commandSelection(this.getLastSyntaxStep(), token, lexeme);
 
                     //com-repeticao
                     this.concatenateSyntaxFunc("com-repeticao");
                     this.concatenateSyntaxStep("1");
-                    this.commandRepetition(this.getLastSyntaxStep(), token, lexeme);
+                    var isRepet = this.commandRepetition(this.getLastSyntaxStep(), token, lexeme);
 
                     //com-desvio
                     this.concatenateSyntaxFunc("com-desvio");
                     this.concatenateSyntaxStep("1");
-                    this.commandBypass(this.getLastSyntaxStep(), token, lexeme);
+                    var isByPass = this.commandBypass(this.getLastSyntaxStep(), token, lexeme);
 
                     //com-leitura
                     this.concatenateSyntaxFunc("com-leitura");
                     this.concatenateSyntaxStep("1");
-                    this.commandRead(this.getLastSyntaxStep(), token, lexeme);
+                    var isRead = this.commandRead(this.getLastSyntaxStep(), token, lexeme);
 
                     //com-escrita
                     this.concatenateSyntaxFunc("com-escrita");
                     this.concatenateSyntaxStep("1");
-                    this.commandWrite(this.getLastSyntaxStep(), token, lexeme);
+                    var isWrite = this.commandWrite(this.getLastSyntaxStep(), token, lexeme);
 
                     //decl-var
                     this.concatenateSyntaxFunc("decl-var");
                     this.concatenateSyntaxStep("1");
-                    this.declareVar(this.getLastSyntaxStep(), token, lexeme);
+                    var isVar = this.declareVar(this.getLastSyntaxStep(), token, lexeme);
 
                     //decl-const
                     this.concatenateSyntaxFunc("decl-const");
                     this.concatenateSyntaxStep("1");
-                    this.declareConst(this.getLastSyntaxStep(), token, lexeme);
+                    var isConst = this.declareConst(this.getLastSyntaxStep(), token, lexeme);
 
+                    if (!isAtrib && !isByPass && !isConst && !isProc && !isRead && !isRepet && !isSelect && !isVar && !isWrite) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 default:
             }
@@ -660,26 +756,38 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("var");
                     this.concatenateSyntaxStep("1");
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
                     if ("OP_ATRIBUI" === token) {
                         this.writeInTab("=", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        this.removeRowTab(1);
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
                     this.concatenateSyntaxFunc("exp");
                     this.concatenateSyntaxStep("1");
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
 
@@ -697,9 +805,13 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("exp");
                         this.concatenateSyntaxStep("1");
+                        var success = this.callFunction(token, lexeme);
+                        if (!success) {
+                            return this.removeLast(false);
+                        }
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
@@ -708,6 +820,9 @@
                         this.replaceLastSyntaxStep("3");
                         this.concatenateSyntaxFunc("bloco");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
@@ -715,18 +830,23 @@
                         this.writeInTab("END-IF", lexeme, 1);
                         this.removeLastSyntaxFunc();
                         this.removeLastSyntaxStep();
+                        return true;
                     } else if ("PR_THEN" === token) {
                         this.writeInTab("THEN", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
                         this.concatenateSyntaxFunc("bloco");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
                     if ("PR_END_IF" === token) {
                         this.writeInTab("END-IF", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -737,6 +857,7 @@
             //WHILE exp DO bloco LOOP | DO bloco WHILE exp ; | REPEAT bloco UNTIL exp ; | FOR ID = exp-soma TO exp-soma DO bloco NEXT
             this.removeLastSyntaxFunc();
             this.removeLastSyntaxStep();
+            return false;
         },
         //com-desvio
         commandBypass: function (step, token, lexeme) {
@@ -749,22 +870,28 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("exp");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else if ("PR_BREAK" === token) {
                         this.writeInTab("com-desvio");
                         this.writeInTab("BREAK", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
 
                     } else if ("PR_CONTINUE" === token) {
                         this.writeInTab("com-desvio");
                         this.writeInTab("CONTINUE", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -779,14 +906,16 @@
                         this.writeInTab("com-leitura");
                         this.writeInTab("SCAN", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
+
                     } else if ("PR_SCAN_LN" === token) {
                         this.writeInTab("com-leitura");
                         this.writeInTab("SCANLN", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
 
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
@@ -795,19 +924,27 @@
                         this.replaceLastSyntaxStep("3");
                         this.concatenateSyntaxFunc("lista-var");
                         this.concatenateSyntaxStep("1");
+                        return true;
+
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     if ("SIN_PAR_F" === token) {
                         this.writeInTab(")", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -822,14 +959,16 @@
                         this.writeInTab("com-escrita");
                         this.writeInTab("PRINT", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
+
                     } else if ("PR_PRINT_LN" === token) {
                         this.writeInTab("com-escrita");
                         this.writeInTab("PRINTLN", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
 
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
@@ -838,19 +977,26 @@
                         this.replaceLastSyntaxStep("3");
                         this.concatenateSyntaxFunc("lista-exp");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
                     if ("SIN_PAR_F" === token) {
                         this.writeInTab(")", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -865,9 +1011,9 @@
                         this.writeInTab("cham-prox");
                         this.writeInTab("ID", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
@@ -876,19 +1022,26 @@
                         this.replaceLastSyntaxStep("3");
                         this.concatenateSyntaxFunc("args");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
                     if ("SIN_PAR_A" === token) {
                         this.writeInTab(")", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -904,7 +1057,11 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("exp");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
                     if ("SIN_V" === token) {
@@ -912,10 +1069,9 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("exp");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
-                        this.callFunction(token, lexeme);
+                        return this.removeLast(true);
                     }
                     break;
                 default:
@@ -930,23 +1086,30 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("exp-soma");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
                     if (this.relacionalOp().find(f => f === token)) {
                         this.writeInTab("op-relac", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
-                        this.callFunction(token, lexeme);
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("exp-soma");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 default:
             }
@@ -965,23 +1128,29 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("exp-mult");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
                     if (this.sumOp().find(f => f === token)) {
                         this.writeInTab("op-soma", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
-                        this.callFunction(token, lexeme);
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("exp-soma");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    if (!success) {
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 default:
             }
@@ -1000,23 +1169,27 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("exp-simples");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        this.removeRowTab(1);
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
                 case "2":
                     if (this.multiplicationOp().find(f => f === token)) {
                         this.writeInTab("op-mult", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        return true
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
-                        this.callFunction(token, lexeme);
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("exp-simples");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    return this.removeLast(this.callFunction(token, lexeme));
                     break;
                 default:
             }
@@ -1037,42 +1210,49 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("exp");
                         this.concatenateSyntaxStep("1");
+                        return true;
 
                     } else if (this.unaryOp().find(f => f === token)) {
                         this.writeInTab("op-unario", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
                         this.concatenateSyntaxFunc("exp");
                         this.concatenateSyntaxStep("1");
+                        return true;
 
                     } else {
                         this.ignoreLastSyntaxFunc();
                         //var
                         this.concatenateSyntaxFunc("var");
                         this.concatenateSyntaxStep("1");
-                        this.variable(this.getLastSyntaxStep(), token, lexeme);
+                        var isVar = this.variable(this.getLastSyntaxStep(), token, lexeme);
 
                         //cham-func
                         this.concatenateSyntaxFunc("cham-func");
                         this.concatenateSyntaxStep("1");
-                        this.callFunc(this.getLastSyntaxStep(), token, lexeme);
+                        var isFunc = this.callFunc(this.getLastSyntaxStep(), token, lexeme);
 
                         //literal
                         this.concatenateSyntaxFunc("literal");
                         this.concatenateSyntaxStep("1");
-                        this.literal(this.getLastSyntaxStep(), token, lexeme);
+                        var isLiteral = this.literal(this.getLastSyntaxStep(), token, lexeme);
+
+                        if (!isVar && !isFunc && !isLiteral) {
+                            this.removeRowTab(1);
+                            return this.removeLast(false);
+                        }
+                        return true;
                     }
                     break;
                 case "2":
                     if ("SIN_PAR_F" === token) {
                         this.writeInTab(")", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
-                    this.removeLastSyntaxFunc();
-                    this.removeLastSyntaxStep();
-                    this.callFunction(token, lexeme);
+                    return this.removeLast(true);
                     break;
                 default:
             }
@@ -1087,16 +1267,12 @@
                         .find(f => f === token)
                     ) {
                         this.writeInTab("literal", lexeme);
-                        this.removeLastSyntaxFunc()
-                        this.removeLastSyntaxStep()
+                        return this.removeLast(true);
                     } else {
-                        this.removeLastSyntaxFunc()
-                        this.removeLastSyntaxStep()
+                        return this.removeLast(false);
                     }
                     break;
                 default:
-                    this.removeLastSyntaxFunc()
-                    this.removeLastSyntaxStep()
             }
         },
         //valor-verdade
@@ -1113,9 +1289,9 @@
                         this.writeInTab("cham-func");
                         this.writeInTab("ID", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
@@ -1124,19 +1300,25 @@
                         this.replaceLastSyntaxStep("3");
                         this.concatenateSyntaxFunc("args");
                         this.concatenateSyntaxStep("1");
+                        return true;
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
                     if ("SIN_PAR_A" === token) {
                         this.writeInTab(")", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
                         this.writeInTab(";", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -1151,6 +1333,12 @@
                     this.ignoreLastSyntaxFunc();
                     this.concatenateSyntaxFunc("lista-exp");
                     this.concatenateSyntaxFunc("1");
+                    var success = this.callFunction(token, step);
+                    if (!success) {
+                        this.removeRowTab(1);
+                        return this.removeLast(false);
+                    }
+                    return success;
                     break;
                 default:
             }
@@ -1164,10 +1352,9 @@
                         this.writeInTab("var");
                         this.writeInTab("ID", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        return true;
                     } else {
-                        //erro?
-                        this.removeLastSyntaxFunc()
-                        this.removeLastSyntaxStep()
+                        return this.removeLast(false);
                     }
                     break;
                 case "2":
@@ -1176,17 +1363,17 @@
                         this.replaceLastSyntaxStep("3");
                         this.concatenateSyntaxFunc("exp-soma");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
-                        this.callFunction(token, lexeme);
+                        return this.removeLast(false);
                     }
                     break;
                 case "3":
                     if ("SIN_COL_F" === token) {
                         this.writeInTab("]", lexeme, 1);
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
+                        return this.removeLast(true);
+                    } else {
+                        return this.removeLast(false);
                     }
                     break;
                 default:
@@ -1201,7 +1388,12 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("var");
                     this.concatenateSyntaxStep("1");
-                    this.callFunction(token, lexeme);
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        this.removeRowTab(1);
+                        return this.removeLast(false);
+                    }
+                    return success;
                     break;
                 case "2":
                     if ("SIN_V" === token) {
@@ -1209,10 +1401,9 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("var");
                         this.concatenateSyntaxStep("1");
+                        return true;
                     } else {
-                        this.removeLastSyntaxFunc();
-                        this.removeLastSyntaxStep();
-                        this.callFunction(token, lexeme);
+                        return this.removeLast(false);
                     }
                     break;
                 default:

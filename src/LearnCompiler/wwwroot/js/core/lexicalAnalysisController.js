@@ -460,10 +460,10 @@
         { lexeme: "STRING", token: "PR_STRING" },
         //decl-proc
         { lexeme: "SUB", token: "PR_SUB" },
-        { lexeme: "END-SUB", token: "PR_END_SUB" },
+        { lexeme: "ENDSUB", token: "PR_END_SUB" },
         //decl-func
         { lexeme: "FUNCTION", token: "PR_FUNCTION" },
-        { lexeme: "END-FUNCTION", token: "PR_END_FUNCTION" },
+        { lexeme: "ENDFUNCTION", token: "PR_END_FUNCTION" },
         //param
         { lexeme: "BY", token: "PR_BY" },
         //mode
@@ -473,7 +473,7 @@
         { lexeme: "IF", token: "PR_IF" },
         { lexeme: "THEN", token: "PR_THEN" },
         { lexeme: "ELSE", token: "PR_ELSE" },
-        { lexeme: "END-IF", token: "PR_END-IF" },
+        { lexeme: "ENDIF", token: "PR_END-IF" },
         //com-repeticao
         { lexeme: "WHILE", token: "PR_WHILE" },
         { lexeme: "DO", token: "PR_DO" },
@@ -980,7 +980,9 @@
             return false;
         },
         isAlphanumeric: function (character) {
-            var alphanumericRegex = /^[0-9a-zA-Z]+$/;
+            if (character === "Enter")
+                return false;
+            var alphanumericRegex = /^[0-9a-zA-Z_]+$/;
             if (character.match(alphanumericRegex) !== null && character.match(alphanumericRegex) !== undefined)
                 return true;
             return false;
@@ -1088,7 +1090,7 @@
 
                     if (this.getToken() !== "") {
                         SymbolTableController.add();
-                        SyntaxAnalysisController.callFunction(this.getToken(), this.getWord());
+                        SyntaxAnalysisController.callFunction(this.getToken(), this.getWord(), true);
                     }
                     this.createImageFromCanvas("slideshow_child", canvas);
                     this.resetStateAttributes();
