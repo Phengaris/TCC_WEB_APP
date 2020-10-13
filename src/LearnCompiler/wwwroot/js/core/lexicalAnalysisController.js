@@ -473,7 +473,7 @@
         { lexeme: "IF", token: "PR_IF" },
         { lexeme: "THEN", token: "PR_THEN" },
         { lexeme: "ELSE", token: "PR_ELSE" },
-        { lexeme: "ENDIF", token: "PR_END-IF" },
+        { lexeme: "ENDIF", token: "PR_END_IF" },
         //com-repeticao
         { lexeme: "WHILE", token: "PR_WHILE" },
         { lexeme: "DO", token: "PR_DO" },

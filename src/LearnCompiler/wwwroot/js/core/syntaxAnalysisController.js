@@ -561,6 +561,7 @@
                     this.concatenateSyntaxStep("1");
                     var success = this.callFunction(token, lexeme);
                     if (!success) {
+                        this.removeRowTab(1);
                         return this.removeLast(false);
                     }
                     return true;
@@ -578,6 +579,7 @@
                     this.concatenateSyntaxStep("1");
                     var success = this.callFunction(token, lexeme);
                     if (!success) {
+                        this.removeRowTab(1);
                         return this.removeLast(false);
                     }
                     return true;
@@ -652,8 +654,15 @@
                     this.replaceLastSyntaxStep("2");
                     this.concatenateSyntaxFunc("lista-com");
                     this.concatenateSyntaxStep("1");
-                    return this.removeLast(this.callFunction(token, lexeme));
+                    var success = this.callFunction(token, lexeme);
+                    if (!success) {
+                        this.removeRowTab(1);
+                        return this.removeLast(false);
+                    }
+                    return true;
                     break;
+                case "2":
+                    return this.removeLast(false);
                 default:
             }
         },
@@ -740,6 +749,7 @@
                     var isConst = this.declareConst(this.getLastSyntaxStep(), token, lexeme);
 
                     if (!isAtrib && !isByPass && !isConst && !isProc && !isRead && !isRepet && !isSelect && !isVar && !isWrite) {
+                        this.removeRowTab(1);
                         return this.removeLast(false);
                     }
                     return true;
@@ -758,6 +768,7 @@
                     this.concatenateSyntaxStep("1");
                     var success = this.callFunction(token, lexeme);
                     if (!success) {
+                        this.removeRowTab(1);
                         return this.removeLast(false);
                     }
                     return true;
@@ -768,7 +779,7 @@
                         this.replaceLastSyntaxStep("3");
                         return true;
                     } else {
-                        this.removeRowTab(1);
+                        this.removeRowTab(3);
                         return this.removeLast(false);
                     }
                     break;
@@ -805,10 +816,6 @@
                         this.replaceLastSyntaxStep("2");
                         this.concatenateSyntaxFunc("exp");
                         this.concatenateSyntaxStep("1");
-                        var success = this.callFunction(token, lexeme);
-                        if (!success) {
-                            return this.removeLast(false);
-                        }
                         return true;
                     } else {
                         return this.removeLast(false);
@@ -1008,7 +1015,7 @@
             switch (step) {
                 case "1":
                     if ("IDENTIFICADOR" === token) {
-                        this.writeInTab("cham-prox");
+                        this.writeInTab("cham-proc");
                         this.writeInTab("ID", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
                         return true;
@@ -1028,7 +1035,7 @@
                     }
                     break;
                 case "3":
-                    if ("SIN_PAR_A" === token) {
+                    if ("SIN_PAR_F" === token) {
                         this.writeInTab(")", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
                         return true;
@@ -1059,6 +1066,7 @@
                     this.concatenateSyntaxStep("1");
                     var success = this.callFunction(token, lexeme);
                     if (!success) {
+                        this.removeRowTab(1);
                         return this.removeLast(false);
                     }
                     return true;
@@ -1088,6 +1096,7 @@
                     this.concatenateSyntaxStep("1");
                     var success = this.callFunction(token, lexeme);
                     if (!success) {
+                        this.removeRowTab(1);
                         return this.removeLast(false);
                     }
                     return true;
@@ -1130,6 +1139,7 @@
                     this.concatenateSyntaxStep("1");
                     var success = this.callFunction(token, lexeme);
                     if (!success) {
+                        this.removeRowTab(1);
                         return this.removeLast(false);
                     }
                     return true;
@@ -1302,6 +1312,7 @@
                         this.concatenateSyntaxStep("1");
                         return true;
                     } else {
+                        this.removeRowTab(2);
                         return this.removeLast(false);
                     }
                     break;
@@ -1332,7 +1343,7 @@
                     this.writeInTab("args");
                     this.ignoreLastSyntaxFunc();
                     this.concatenateSyntaxFunc("lista-exp");
-                    this.concatenateSyntaxFunc("1");
+                    this.concatenateSyntaxStep("1");
                     var success = this.callFunction(token, step);
                     if (!success) {
                         this.removeRowTab(1);
