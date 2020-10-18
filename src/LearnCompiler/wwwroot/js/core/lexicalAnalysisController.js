@@ -671,7 +671,7 @@
                 if (this.getLastChar() === ".") {
                     repeatWord = character;
                     this.setElementAttribute("state", "state", "ERRO_NUM_REAL");
-                    var error = "Erro no lexema '" + this.getWord() + "' . O lexema esperava um número e recebeu o valor  '" + character + "'";
+                    var error = "Erro no lexema '" + this.getWord() + "'. O lexema esperava um número e recebeu o valor  '" + character + "'";
                     ErrorManager.addError(error, this.getWord());
                 } else {
                     repeatWord = character;
@@ -816,9 +816,9 @@
             else {
                 if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
                     word = this.getWord();
-                    var lastImage = images[images.length - 1];
                     if (word === "") {
                         if (images.length > 0) {
+                            lastImage = images[images.length - 1];
                             word = lastImage.getAttribute("word");
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
@@ -833,6 +833,7 @@
 
                     if (word === "") {
                         if (images.length > 0) {
+                            lastImage = images[images.length - 1];
                             word = lastImage.getAttribute("word");
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
@@ -1084,6 +1085,7 @@
                     this.setElementAttribute("state", "word", word + key);
                 if (state === "SEPARADOR" && !needRepeat)
                     return;
+
                 if (!Number.isInteger(parseInt(state))) {
                     if (state !== "SEPARADOR" && this.getToken() === "")
                         this.setElementAttribute("state", "token", state);
