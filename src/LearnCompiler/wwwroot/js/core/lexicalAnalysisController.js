@@ -424,11 +424,83 @@
             coordinates: [
                 {
                     case_start: "1",
-                    case_end: "OP_DIVI",
+                    case_end: "12",
                     width_start: [0],
-                    width_end: [1124],
+                    width_end: [1044],
+                    height_start: [639],
+                    height_end: [963]
+                },
+                {
+                    case_start: "12",
+                    case_end: "OP_DIVI",
+                    width_start: [719],
+                    width_end: [1884],
+                    height_start: [639],
+                    height_end: [963]
+                },
+                {
+                    case_start: "12",
+                    case_end: "15",
+                    width_start: [719, 719, 719],
+                    width_end: [1044, 1000, 1044],
+                    height_start: [52, 45, 0],
+                    height_end: [963, 52, 45]
+                },
+                {
+                    case_start: "15",
+                    case_end: "15",
+                    width_start: [719],
+                    width_end: [1884],
                     height_start: [0],
-                    height_end: [324]
+                    height_end: [323]
+                },
+                {//verify this
+                    case_start: "15",
+                    case_end: "1",
+                    width_start: [0, 0, 0, 0],
+                    width_end: [1044, 1000, 1044, 323],
+                    height_start: [52, 45, 0, 0],
+                    height_end: [324, 52, 45, 963]
+                },
+                {
+                    case_start: "12",
+                    case_end: "13",
+                    width_start: [719, 719, 719],
+                    width_end: [1044, 983, 1044],
+                    height_start: [639, 1315, 1320],
+                    height_end: [1315, 1320, 1604]
+                },
+                {
+                    case_start: "13",
+                    case_end: "13",
+                    width_start: [719],
+                    width_end: [1884],
+                    height_start: [1279],
+                    height_end: [1604]
+                },
+                {
+                    case_start: "13",
+                    case_end: "14",
+                    width_start: [719, 719, 719, 323, 0],
+                    width_end: [983, 1000, 1044, 719, 323],
+                    height_start: [1279, 1315, 1320, 1465, 1279],
+                    height_end: [1315, 1320, 1604, 1604, 1604]
+                },
+                {
+                    case_start: "14",
+                    case_end: "13",
+                    width_start: [0, 0, 0, 323, 719, 736, 719, 719, 719],
+                    width_end: [302, 306, 323, 719, 1044, 1044, 1044, 984, 1044],
+                    height_start: [1522, 1514, 1279, 1382, 1521, 1514, 1321, 1313, 1279],
+                    height_end: [1604, 1522, 1514, 1463, 1604, 1521, 1514, 1321, 1313]
+                },
+                {
+                    case_start: "14",
+                    case_end: "1",
+                    width_start: [0, 0, 0],
+                    width_end: [302, 307, 323],
+                    height_start: [1522, 1514, 639],
+                    height_end: [1604, 1522, 1514]
                 }
             ]
         },
@@ -458,6 +530,9 @@
         { lexeme: "CHAR", token: "PR_CHAR" },
         { lexeme: "BOOL", token: "PR_BOOL" },
         { lexeme: "STRING", token: "PR_STRING" },
+        //decl-proc
+        { lexeme: "MAIN", token: "PR_MAIN" },
+        { lexeme: "END", token: "PR_END" },
         //decl-proc
         { lexeme: "SUB", token: "PR_SUB" },
         { lexeme: "ENDSUB", token: "PR_END_SUB" },
@@ -774,10 +849,12 @@
                 this.setElementAttribute("state", "state", "14");
         },
         analysisCase14: function (character) {
-            var word = this.getWord;
+            var word = this.getWord();
             var lastChar = word[word.length - 1];
             if (character === "/" && lastChar === "*") //para validar um comentario eh necessario validar se o penultimo caracter corresponde a *
                 this.setElementAttribute("state", "state", "1");
+            else
+                this.setElementAttribute("state", "state", "13");
         },
         analysisCase15: function (character) {
             if (character === "Enter")
@@ -816,18 +893,25 @@
             else {
                 if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
                     word = this.getWord();
+                    var alreadyRemovedSyntax = false;
                     if (word === "") {
                         if (images.length > 0) {
                             lastImage = images[images.length - 1];
                             word = lastImage.getAttribute("word");
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
-                            if (token.length > 0)
+                            if (token.length > 0) {
                                 SymbolTableController.delete();
+                                SyntaxAnalysisController.backspaceEvent(token, !alreadyRemovedSyntax);
+                                alreadyRemovedSyntax = true;
+                            }
                         }
                     }
+                    if (!separators.includes(word))
+                        this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
+                    else 
+                        this.setElementAttribute("state", "word", "");
 
-                    this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
 
                     word = this.getWord();
 
@@ -837,8 +921,10 @@
                             word = lastImage.getAttribute("word");
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
-                            if (token.length > 0)
+                            if (token.length > 0) {
                                 SymbolTableController.delete();
+                                SyntaxAnalysisController.backspaceEvent(token, !alreadyRemovedSyntax);
+                            }
                         }
                     }
 
@@ -1068,6 +1154,7 @@
 
             state = this.getState();
 
+            var stateInit = this.getStateInit();
             if (state !== "1") {
                 var img_id = this.getImageId(state);
                 var image = this.getImage(img_id);
@@ -1075,7 +1162,6 @@
                 if (word === "")
                     this.drawImage(canvas, context, image);
 
-                var stateInit = this.getStateInit();
 
                 var coordinates = this.getCoordinates(state, stateInit);
 
