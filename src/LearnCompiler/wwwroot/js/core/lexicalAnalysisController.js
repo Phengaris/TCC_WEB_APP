@@ -454,9 +454,9 @@
                     height_start: [0],
                     height_end: [323]
                 },
-                {//verify this
+                {
                     case_start: "15",
-                    case_end: "1",
+                    case_end: "LOOP1",
                     width_start: [0, 0, 0, 0],
                     width_end: [1044, 1000, 1044, 323],
                     height_start: [52, 45, 0, 0],
@@ -496,7 +496,7 @@
                 },
                 {
                     case_start: "14",
-                    case_end: "1",
+                    case_end: "LOOP1",
                     width_start: [0, 0, 0],
                     width_end: [302, 307, 323],
                     height_start: [1522, 1514, 639],
@@ -851,14 +851,14 @@
         analysisCase14: function (character) {
             var word = this.getWord();
             var lastChar = word[word.length - 1];
-            if (character === "/" && lastChar === "*") //para validar um comentario eh necessario validar se o penultimo caracter corresponde a *
-                this.setElementAttribute("state", "state", "1");
+            if (character === "/" && lastChar === "*")
+                this.setElementAttribute("state", "state", "LOOP1");
             else
                 this.setElementAttribute("state", "state", "13");
         },
         analysisCase15: function (character) {
             if (character === "Enter")
-                this.setElementAttribute("state", "state", "1");
+                this.setElementAttribute("state", "state", "LOOP1");
         },
         analysisCaseSeparator: function (character) {
             if (!separators.includes(character))
@@ -1134,9 +1134,6 @@
             if (!isRepeat)
                 this.setElementAttribute("state", "entire_code", this.getEntireCurrentCode());
 
-            if (key === 'Enter')
-                key = " ";
-
             var needRepeat = true;
             repeatWord = "";
 
@@ -1148,6 +1145,9 @@
             var state = this.getState();
 
             this.analysis(key);
+
+            if (key === 'Enter')
+                key = " ";
 
             if (repeatWord === "")
                 needRepeat = false;
@@ -1173,7 +1173,11 @@
                     return;
 
                 if (!Number.isInteger(parseInt(state))) {
-                    if (state !== "SEPARADOR" && this.getToken() === "")
+                    if (state !== "SEPARADOR" &&
+                        state !== "LOOP1" &&
+                        !state.includes("ERRO") &&
+                        this.getToken() === ""
+                    )
                         this.setElementAttribute("state", "token", state);
 
                     if (this.getToken() !== "") {

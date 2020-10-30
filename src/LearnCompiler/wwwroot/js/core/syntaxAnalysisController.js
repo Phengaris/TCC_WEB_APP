@@ -48,7 +48,7 @@
                     syntaxTabDiv.children[index].remove();
                     if (index < syntaxTabDiv.childElementCount) {
                         var s = syntaxTabDiv.children[index].getAttribute("syntaxFunc").split('/');
-                        if (s.findIndex(f => f === 'cham-proc') !== (s.length - 1))
+                        if (s.findIndex(f => f === lastFunc) !== (s.length - 1))
                             return;
 
                     }
@@ -389,8 +389,6 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático na declaração do programa. Esperava-se uma lista de declarações.";
-                        this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
                     return [true, false, false];
@@ -412,8 +410,6 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático na declaração da lista de declarações. Esperava-se uma declaração.";
-                        this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
                     return [true, false, false];
@@ -435,6 +431,7 @@
             //decl-const | decl-var | decl-proc | decl-func
             switch (step) {
                 case "1":
+                    var originalLastFunc = this.getLastSyntaxFunc(true);
                     this.ignoreLastSyntaxFunc();
 
                     this.writeInTab(token, "decl");
@@ -467,6 +464,7 @@
                     if (!isConst && !isFunc && !isProc && !isVar && !isVar && !isMain) {
                         var error = "Erro sintático na declaração. Esperava-se uma declaração: constante, variável, procedimento ou função.";
                         this.writeInTab(token, "Erro", error, 1);
+                        this.replaceLastSyntaxFunc(originalLastFunc);
                         return [false, true, false];
                     }
                     return [true, false, false];
@@ -2028,7 +2026,6 @@
                     }
                     break;
                 case "4":
-                    this.replaceLastSyntaxStep("3");
                     this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
