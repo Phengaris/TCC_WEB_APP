@@ -2,13 +2,17 @@
     return {
         writeInTab: function (token = "", text, lexeme = "", addTab = 0) {
             var func = this.getLastSyntaxFunc(true);
-            func = func.replace("ignore-", "");
             var step = this.getLastSyntaxStep();
+
+            var allFuncs = this.getSyntaxFunc();
+            var allSteps = this.getSyntaxStep();
 
             var div = document.getElementById("syntaxAnalisys");
             var row = document.createElement("div");
             row.setAttribute("syntaxFunc", func);
-            row.setAttribute("syntaxStep", step);
+            row.setAttribute("SyntaxStep", step);
+            row.setAttribute("syntaxFuncs", allFuncs);
+            row.setAttribute("SyntaxSteps", allSteps);
             row.setAttribute("token", token);
 
             if (text === "hidden") {
@@ -39,11 +43,12 @@
                     return;
 
                 var index = syntaxTabArray.findIndex(f => f === reversedArray[lastBoldIndexReverted])
-                
+
                 do {
                     syntaxTabDiv.children[index].remove();
                     if (index < syntaxTabDiv.childElementCount) {
-                        if (!syntaxTabDiv.children[index].getAttribute("syntaxFunc").includes(lastFunc))
+                        var s = syntaxTabDiv.children[index].getAttribute("syntaxFunc").split('/');
+                        if (s.findIndex(f => f === 'cham-proc') !== (s.length - 1))
                             return;
 
                     }
@@ -75,13 +80,181 @@
                         syntaxTabDiv.children[index].innerHTML = innerHtml.substring(3, innerHtml.length);
                         ++index;
                     }
-                       
+
                 } while (index < syntaxTabDiv.childElementCount);
             }
         },
         getTabs: function (addTab) {
-            var len = Array.from(this.getSyntaxFunc().split(";")).length + addTab;
+            var len = Array.from(this.getSyntaxFunc().split(",")).length + addTab;
             return "&emsp;".repeat(len);
+        },
+        setSyntaxFunc: function (func) {
+            var state = document.getElementById("state");
+            state.setAttribute("syntaxFunc", func);
+        },
+        getSyntaxFunc: function () {
+            var state = document.getElementById("state");
+            return state.getAttribute("syntaxFunc");
+        },
+        getLastSyntaxFunc: function (withParent = false) {
+            var syntaxFunc = this.getSyntaxFunc();
+            var splittedFunc = syntaxFunc.split(",");
+            var lastFunc = splittedFunc.pop();
+            if (withParent)
+                return lastFunc;
+            return lastFunc.split("/").pop();
+        },
+        concatenateLastSyntaxFunc: function (func) {
+            var syntaxFunc = this.getSyntaxFunc();
+            if (syntaxFunc !== "")
+                this.setSyntaxFunc(syntaxFunc + "," + func);
+            else
+                this.setSyntaxFunc(func);
+        },
+        replaceLastSyntaxFunc: function (func) {
+            var syntaxFunc = this.getSyntaxFunc();
+            var splittedFunc = syntaxFunc.split(",");
+            splittedFunc.pop();
+            syntaxFunc = splittedFunc.join(",");
+            if (syntaxFunc !== "")
+                this.setSyntaxFunc(syntaxFunc + "," + func);
+            else
+                this.setSyntaxFunc(func);
+        },
+        ignoreLastSyntaxFunc: function () {
+            var syntaxFunc = this.getSyntaxFunc();
+            var splittedFunc = syntaxFunc.split(",");
+            var lastFunc = splittedFunc.pop().split("/");
+            syntaxFunc = splittedFunc.join(",");
+            if (syntaxFunc !== "") {
+                var ignoreFunc = "/ignore-" + lastFunc.pop();
+                lastFunc = lastFunc.join('/');
+                this.setSyntaxFunc(syntaxFunc + "," + lastFunc + ignoreFunc);
+            }
+            else
+                this.setSyntaxFunc("ignore-" + lastFunc.pop());
+        },
+        removeLastSyntaxFunc: function () {
+            var syntaxFunc = this.getSyntaxFunc();
+            var splittedFunc = syntaxFunc.split(",");
+            splittedFunc.pop();
+            var joinedFunc = splittedFunc.join(",");
+            if (joinedFunc === "")
+                this.setSyntaxFunc("programa");
+            else
+                this.setSyntaxFunc(joinedFunc);
+        },
+        removeLast: function (success, hasErrors, deleteRow) {
+            if (deleteRow)
+                this.removeRowTab();
+            this.removeLastSyntaxFunc();
+            this.removeLastSyntaxStep();
+            return [success, hasErrors, deleteRow];
+        },
+        setSyntaxStep: function (step) {
+            var state = document.getElementById("state");
+            state.setAttribute("SyntaxStep", step);
+        },
+        getSyntaxStep: function () {
+            var state = document.getElementById("state");
+            return state.getAttribute("SyntaxStep");
+        },
+        getLastSyntaxStep: function () {
+            var SyntaxStep = this.getSyntaxStep();
+            var splittedStep = SyntaxStep.split(",");
+            var lastStep = splittedStep.pop();
+            return lastStep;
+        },
+        concatenateLastSyntaxStep: function (step) {
+            var SyntaxStep = this.getSyntaxStep();
+            if (SyntaxStep !== "")
+                this.setSyntaxStep(SyntaxStep + "," + step);
+            else
+                this.setSyntaxStep(step);
+        },
+        replaceLastSyntaxStep: function (step) {
+            var SyntaxStep = this.getSyntaxStep();
+            var splittedStep = SyntaxStep.split(",");
+            splittedStep.pop();
+            SyntaxStep = splittedStep.join(",");
+            if (SyntaxStep !== "")
+                this.setSyntaxStep(SyntaxStep + "," + step);
+            else
+                this.setSyntaxStep(step);
+        },
+        replaceSyntaxStep: function (step, index) {
+            var SyntaxStep = this.getSyntaxStep();
+            var splittedStep = SyntaxStep.split(",");
+            splittedStep.splice(index, 1, step);
+            SyntaxStep = splittedStep.join(",");
+            if (SyntaxStep !== "")
+                this.setSyntaxStep(SyntaxStep);
+            else
+                this.setSyntaxStep(step);
+        },
+        removeLastSyntaxStep: function () {
+            var SyntaxStep = this.getSyntaxStep();
+            var splittedStep = SyntaxStep.split(",");
+            splittedStep.pop();
+            var joinedStep = splittedStep.join(",");
+            if (joinedStep === "")
+                this.setSyntaxStep("1");
+            else
+                this.setSyntaxStep(joinedStep);
+        },
+        backspaceEvent: function (token) {
+            var syntaxTabDiv = document.getElementById("syntaxAnalisys");
+
+            if (syntaxTabDiv.childElementCount > 0) {
+                var syntaxTabArray = Array.from(syntaxTabDiv.children);
+                var reversedArray = syntaxTabArray.slice().reverse();
+
+                var lastRowIndexReverted = reversedArray.findIndex(f => f.getAttribute("token") === token);
+
+                if (lastRowIndexReverted === -1)
+                    return;
+
+                var index = syntaxTabArray.findIndex(f => f === reversedArray[lastRowIndexReverted]);
+
+                var element = syntaxTabDiv.children[index];
+                var func = element.getAttribute("syntaxFunc").split('/');
+                var lastFunc = func.pop();
+
+                do {
+                    if (index >= 0 && index < syntaxTabDiv.childElementCount) {
+                        if (index >= 0 && index < syntaxTabDiv.childElementCount) {
+                            var newElement = syntaxTabDiv.children[index];
+                            var newFunc = newElement.getAttribute("syntaxFunc").split('/');
+                            var newLastFunc = newFunc.pop();
+
+                            if (lastFunc === newLastFunc && token === newElement.getAttribute("token")) {
+                                syntaxTabDiv.children[index].remove();
+                            } else {
+                                lastFunc = func.pop();
+                                if (lastFunc === newLastFunc && token === newElement.getAttribute("token")) {
+                                    syntaxTabDiv.children[index].remove();
+                                    this.removeLastSyntaxFunc();
+                                    this.removeLastSyntaxStep();
+                                }
+                                else
+                                    break;
+                            }
+                        }
+                        else
+                            break;
+                        --index;
+                    }
+                } while (index >= 0 && index < syntaxTabDiv.childElementCount);
+
+                if (syntaxTabDiv.childElementCount === 0) {
+                    this.setSyntaxFunc("programa");
+                    this.setSyntaxStep("1");
+                }
+                else {
+                    this.setSyntaxFunc(newElement.getAttribute("syntaxFuncs"));
+                    this.setSyntaxStep(newElement.getAttribute("SyntaxSteps"));
+                }
+            }
         },
         callFunction: function (token, lexeme, fromLexic = false) {
             var func = this.getLastSyntaxFunc();
@@ -204,197 +377,14 @@
             }
             return [success, hasErrors, deleteRow];
         },
-        setSyntaxFunc: function (func) {
-            var state = document.getElementById("state");
-            state.setAttribute("syntaxFunc", func);
-        },
-        getSyntaxFunc: function () {
-            var state = document.getElementById("state");
-            return state.getAttribute("syntaxFunc");
-        },
-        getLastSyntaxFunc: function (withParent = false) {
-            var syntaxFunc = this.getSyntaxFunc();
-            var splittedFunc = syntaxFunc.split(";");
-            var lastFunc = splittedFunc.pop();
-            if (withParent)
-                return lastFunc;
-            return lastFunc.split("/").pop();
-        },
-        concatenateLastSyntaxFunc: function (func) {
-            var syntaxFunc = this.getSyntaxFunc();
-            if (syntaxFunc !== "")
-                this.setSyntaxFunc(syntaxFunc + ";" + func);
-            else
-                this.setSyntaxFunc(func);
-        },
-        concatenateSyntaxFunc: function (func, index) {
-            var syntaxFunc = this.getSyntaxFunc();
-            var splittedFunc = syntaxFunc.split(";");
-            splittedFunc.splice(index + 1, 0, func);
-            syntaxFunc = splittedFunc.join(";");
-            if (syntaxFunc !== "")
-                this.setSyntaxFunc(syntaxFunc);
-            else
-                this.setSyntaxFunc(func);
-        },
-        replaceLastSyntaxFunc: function (func) {
-            var syntaxFunc = this.getSyntaxFunc();
-            var splittedFunc = syntaxFunc.split(";");
-            splittedFunc.pop();
-            syntaxFunc = splittedFunc.join(";");
-            if (syntaxFunc !== "")
-                this.setSyntaxFunc(syntaxFunc + ";" + func);
-            else
-                this.setSyntaxFunc(func);
-        },
-        ignoreLastSyntaxFunc: function () {
-            var syntaxFunc = this.getSyntaxFunc();
-            var splittedFunc = syntaxFunc.split(";");
-            var lastFunc = splittedFunc.pop();
-            lastFunc = lastFunc.split("/").pop()
-            syntaxFunc = splittedFunc.join(";");
-            if (syntaxFunc !== "")
-                this.setSyntaxFunc(syntaxFunc + ";" + "ignore-" + lastFunc);
-            else
-                this.setSyntaxFunc("ignore-" + lastFunc);
-        },
-        removeLastSyntaxFunc: function () {
-            var syntaxFunc = this.getSyntaxFunc();
-            var splittedFunc = syntaxFunc.split(";");
-            splittedFunc.pop();
-            var joinedFunc = splittedFunc.join(";");
-            if (joinedFunc === "")
-                this.setSyntaxFunc("programa");
-            else
-                this.setSyntaxFunc(joinedFunc);
-        },
-        removeLast: function (success, hasErrors, deleteRow) {
-            if (deleteRow)
-                this.removeRowTab();
-            this.removeLastSyntaxFunc();
-            this.removeLastSyntaxStep();
-            return [success, hasErrors, deleteRow];
-        },
-        setSyntaxStep: function (step) {
-            var state = document.getElementById("state");
-            state.setAttribute("syntaxStep", step);
-        },
-        getSyntaxStep: function () {
-            var state = document.getElementById("state");
-            return state.getAttribute("syntaxStep");
-        },
-        getLastSyntaxStep: function () {
-            var syntaxStep = this.getSyntaxStep();
-            var splittedStep = syntaxStep.split(";");
-            return splittedStep.pop();
-        },
-        concatenateLastSyntaxStep: function (step) {
-            var syntaxStep = this.getSyntaxStep();
-            if (syntaxStep !== "")
-                this.setSyntaxStep(syntaxStep + ";" + step);
-            else
-                this.setSyntaxStep(step);
-        },
-        concatenateSyntaxStep: function (step, index) {
-            var syntaxStep = this.getSyntaxStep();
-            var splittedStep = syntaxStep.split(";");
-            splittedStep.splice(index + 1, 0, step);
-            syntaxStep = splittedStep.join(";");
-            if (syntaxStep !== "")
-                this.setSyntaxStep(syntaxStep);
-            else
-                this.setSyntaxStep(step);
-        },
-        replaceLastSyntaxStep: function (step) {
-            var syntaxStep = this.getSyntaxStep();
-            var splittedStep = syntaxStep.split(";");
-            splittedStep.pop();
-            syntaxStep = splittedStep.join(";");
-            if (syntaxStep !== "")
-                this.setSyntaxStep(syntaxStep + ";" + step);
-            else
-                this.setSyntaxStep(step);
-        },
-        replaceSyntaxStep: function (step, index) {
-            var syntaxStep = this.getSyntaxStep();
-            var splittedStep = syntaxStep.split(";");
-            splittedStep.splice(index, 1, step);
-            syntaxStep = splittedStep.join(";");
-            if (syntaxStep !== "")
-                this.setSyntaxStep(syntaxStep);
-            else
-                this.setSyntaxStep(step);
-        },
-        removeLastSyntaxStep: function () {
-            var syntaxStep = this.getSyntaxStep();
-            var splittedStep = syntaxStep.split(";");
-            splittedStep.pop();
-            var joinedStep = splittedStep.join(";");
-            if (joinedStep === "")
-                this.setSyntaxStep("1");
-            else
-                this.setSyntaxStep(joinedStep);
-        },
-        setInitialSyntaxFuncStep: function () {
-            var state = document.getElementById("state");
-            state.setAttribute("syntaxFunc", "");
-            state.setAttribute("syntaxStep", "1");
-        },
-        backspaceEvent: function (token, replaceLastStep = false) {
-            var syntaxTabDiv = document.getElementById("syntaxAnalisys");
-
-            if (syntaxTabDiv.childElementCount > 0) {
-                var syntaxTabArray = Array.from(syntaxTabDiv.children);
-                var reversedArray = syntaxTabArray.slice().reverse();
-
-                var lastRowIndexReverted = reversedArray.findIndex(f => f.getAttribute("token") === token);
-
-                if (lastRowIndexReverted === -1)
-                    return;
-
-                var index = syntaxTabArray.findIndex(f => f === reversedArray[lastRowIndexReverted]);
-
-                var element = syntaxTabDiv.children[index];
-                var func = element.getAttribute("syntaxFunc");
-                var step = element.getAttribute("syntaxStep");
-
-
-                var previousRow = reversedArray.find(f => f.getAttribute("token") !== token);
-                var previousStep = "1";
-                var previousFunc = "programa";
-                if (previousRow !== undefined) {
-                    previousStep = previousRow.getAttribute("syntaxStep");
-                    previousFunc = previousRow.getAttribute("syntaxFunc");
-                }
-
-                do {
-                    if (index >= 0 && index < syntaxTabDiv.childElementCount) {
-                        if (syntaxTabDiv.children[index].getAttribute("token") === token || syntaxTabDiv.children[index].className === "hidden") {
-                            syntaxTabDiv.children[index].remove();
-                        }
-                        else
-                            break;
-                        --index;
-                    }
-                } while (index >= 0 && index < syntaxTabDiv.childElementCount);
-                if (syntaxTabDiv.childElementCount === 0) {
-                    this.setSyntaxFunc("programa");
-                    this.setSyntaxStep("1");
-                }
-                else {
-                    this.replaceLastSyntaxFunc(syntaxTabDiv.lastChild.getAttribute("syntaxFunc"));
-                    this.replaceLastSyntaxStep((parseInt(syntaxTabDiv.lastChild.getAttribute("syntaxStep")) + 1).toString());
-                }
-            }
-        },
         //Declarações
         //programa
         program: function (step, token, lexeme) {
             //lista-decl
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "programa");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "programa");
                     this.concatenateLastSyntaxFunc("programa/lista-decl");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -416,8 +406,8 @@
             //decl lista-decl | decl
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "lista-decl");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "lista-decl");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -445,32 +435,32 @@
             //decl-const | decl-var | decl-proc | decl-func
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "decl");
-                    var lastFunc = this.getLastSyntaxFunc();
                     this.ignoreLastSyntaxFunc();
 
+                    this.writeInTab(token, "decl");
+
                     //decl-const
-                    this.concatenateLastSyntaxFunc(lastFunc + "/decl-const");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl-const");
                     this.concatenateLastSyntaxStep("1");
                     var [isConst, _, _] = this.callFunction(token, lexeme);
 
                     //decl-var
-                    this.concatenateLastSyntaxFunc(lastFunc + "/decl-var");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl-var");
                     this.concatenateLastSyntaxStep("1");
                     var [isVar, _, _] = this.callFunction(token, lexeme);
 
                     //decl-proc
-                    this.concatenateLastSyntaxFunc(lastFunc + "/decl-proc");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl-proc");
                     this.concatenateLastSyntaxStep("1");
                     var [isProc, _, _] = this.callFunction(token, lexeme);
 
                     //decl-func
-                    this.concatenateLastSyntaxFunc(lastFunc + "/decl-func");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl-func");
                     this.concatenateLastSyntaxStep("1");
                     var [isFunc, _, _] = this.callFunction(token, lexeme);
 
                     //decl-main
-                    this.concatenateLastSyntaxFunc(lastFunc + "/decl-main");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl-main");
                     this.concatenateLastSyntaxStep("1");
                     var [isMain, _, _] = this.callFunction(token, lexeme);
 
@@ -490,9 +480,9 @@
             switch (step) {
                 case "1":
                     if ("PR_MAIN" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "decl-main");
                         this.writeInTab(token, "MAIN", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -500,8 +490,8 @@
                     break;
                 case "2":
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração da função principal. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
@@ -511,8 +501,8 @@
                     break;
                 case "3":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        this.writeInTab(token, ")", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração da função principal. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
@@ -522,6 +512,7 @@
                     break;
                 case "4":
                     this.replaceLastSyntaxStep("5");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -534,8 +525,9 @@
                     break;
                 case "5":
                     if ("PR_END" === token) {
-                        this.writeInTab(token, "END", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "END", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático na declaração da função principal. Esperava-se um END e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -551,9 +543,9 @@
             switch (step) {
                 case "1":
                     if ("PR_CONST" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "decl-const");
                         this.writeInTab(token, "CONST", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -561,8 +553,8 @@
                     break;
                 case "2":
                     if ("IDENTIFICADOR" === token) {
-                        this.writeInTab(token, "ID", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "ID", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de constante. Esperava-se um IDENTIFICADOR e recebeu o valor '" + lexeme + "'.";
@@ -572,8 +564,8 @@
                     break;
                 case "3":
                     if ("OP_ATRIBUI" === token) {
-                        this.writeInTab(token, "=", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        this.writeInTab(token, "=", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de constante. Esperava-se um '=' e recebeu o valor '" + lexeme + "'.";
@@ -583,6 +575,7 @@
                     break;
                 case "4":
                     this.replaceLastSyntaxStep("5");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/literal");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -595,8 +588,9 @@
                     break;
                 case "5":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático na declaração de constante. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -612,9 +606,9 @@
             switch (step) {
                 case "1":
                     if ("PR_VAR" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "decl-var");
                         this.writeInTab(token, "VAR", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -622,6 +616,7 @@
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/espec-tipo");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -633,6 +628,7 @@
                     return [true, false, false];
                     break;
                 case "3":
+                    this.writeInTab("", "hidden");
                     this.replaceLastSyntaxStep("4");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-var");
                     this.concatenateLastSyntaxStep("1");
@@ -646,8 +642,9 @@
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático na declaração de variável. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -665,8 +662,9 @@
                     if (["PR_INT", "PR_FLOAT", "PR_CHAR", "PR_BOOL", "PR_STRING"]
                         .find(f => f === token)
                     ) {
-                        this.writeInTab(token, "espec-tipo", lexeme);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "espec-tipo", lexeme, 1);
+                        return result;
                     }
                     return this.removeLast(false, false, false);
                     break;
@@ -679,17 +677,17 @@
             switch (step) {
                 case "1":
                     if ("PR_SUB" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "decl-proc");
                         this.writeInTab(token, "SUB", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
                     }
                     break;
                 case "2":
-                    //this.writeInTab("", "hidden");
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/espec-tipo");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -702,8 +700,8 @@
                     break;
                 case "3":
                     if ("IDENTIFICADOR" === token) {
-                        this.writeInTab(token, "ID", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        this.writeInTab(token, "ID", lexeme, 1);
                         return [true, false, false];
                     } else {
                         this.writeInTab("", "hidden");
@@ -714,8 +712,8 @@
                     break;
                 case "4":
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("5");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
                     } else {
                         this.writeInTab("", "hidden");
@@ -726,6 +724,7 @@
                     break;
                 case "5":
                     this.replaceLastSyntaxStep("6");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/params");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -733,8 +732,8 @@
                     break;
                 case "6":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
                         this.replaceLastSyntaxStep("7");
+                        this.writeInTab(token, ")", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de procedimento. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
@@ -744,6 +743,7 @@
                     break;
                 case "7":
                     this.replaceLastSyntaxStep("8");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -756,8 +756,9 @@
                     break;
                 case "8":
                     if ("PR_END_SUB" === token) {
-                        this.writeInTab(token, "END-SUB", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "END-SUB", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático na declaração de procedimento. Esperava-se um 'ENDSUB' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -773,9 +774,9 @@
             switch (step) {
                 case "1":
                     if ("PR_FUNCTION" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "decl-func");
                         this.writeInTab(token, "FUNCTION", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -783,6 +784,7 @@
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/espec-tipo");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -795,8 +797,8 @@
                     break;
                 case "3":
                     if ("IDENTIFICADOR" === token) {
-                        this.writeInTab(token, "ID", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        this.writeInTab(token, "ID", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de função. Esperava-se um IDENTIFICADOR e recebeu o valor '" + lexeme + "'.";
@@ -806,8 +808,8 @@
                     break;
                 case "4":
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("5");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de função. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
@@ -817,6 +819,7 @@
                     break;
                 case "5":
                     this.replaceLastSyntaxStep("6");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/params");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -824,8 +827,8 @@
                     break;
                 case "6":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
                         this.replaceLastSyntaxStep("7");
+                        this.writeInTab(token, ")", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de função. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
@@ -835,6 +838,7 @@
                     break;
                 case "7":
                     this.replaceLastSyntaxStep("8");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -847,8 +851,9 @@
                     break;
                 case "8":
                     if ("PR_END_FUNCTION" === token) {
-                        this.writeInTab(token, "END-FUNCTION", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "END-FUNCTION", lexeme, 2);
+                        return result;
                     } else {
                         this.writeInTab(token, "Erro", error, 1);
                         var error = "Erro sintático na declaração de função. Esperava-se um 'ENDFUNCTION' e recebeu o valor '" + lexeme + "'.";
@@ -864,10 +869,9 @@
             //lista-param | null            
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "params");
-                    var lastFunc = this.getLastSyntaxFunc();
                     this.ignoreLastSyntaxFunc();
-                    this.concatenateLastSyntaxFunc(lastFunc + "/lista-param");
+                    this.writeInTab(token, "params");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-param");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
@@ -882,8 +886,8 @@
             //lista-param , param | param
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "lista-param");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "lista-param");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/param");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -894,14 +898,25 @@
                     break;
                 case "2":
                     if ("SIN_V" === token) {
+                        this.replaceLastSyntaxStep("3");
                         this.writeInTab(token, ",", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
-                        this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/param");
-                        this.concatenateLastSyntaxStep("1");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
                     }
+                    break;
+                case "3":
+                    this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "hidden");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/param");
+                    this.concatenateLastSyntaxStep("1");
+                    var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
+                    if (!success) {
+                        var error = "Erro sintático na lista de parâmetros. Esperava-se um parâmetro.";
+                        this.writeInTab(token, "Erro", error, 1);
+                        return [false, true, false];
+                    }
+                    return [true, false, false];
                     break;
                 default:
             }
@@ -912,9 +927,9 @@
             switch (step) {
                 case "1":
                     if ("PR_VAR" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "param");
                         this.writeInTab(token, "VAR", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -922,6 +937,7 @@
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/espec-tipo");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -934,6 +950,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-var");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -946,8 +963,8 @@
                     break;
                 case "4":
                     if ("PR_BY" === token) {
-                        this.writeInTab(token, "BY", lexeme, 1);
                         this.replaceLastSyntaxStep("5");
+                        this.writeInTab(token, "BY", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de parâmetro. Esperava-se um 'BY' e recebeu o valor '" + lexeme + "'.";
@@ -964,7 +981,9 @@
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
-                    return this.removeLast(true, false, false);
+                    var result = this.removeLast(true, false, false);
+                    this.writeInTab(token, "hidden");
+                    return result;
                     break;
                 default:
             }
@@ -977,8 +996,9 @@
                     if (["PR_VALUE", "PR_REF"]
                         .find(f => f === token)
                     ) {
-                        this.writeInTab(token, "mode", lexeme);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "mode", lexeme, 1);
+                        return result;
                     }
                     return this.removeLast(false, false, false);
                     break;
@@ -991,8 +1011,8 @@
             //lista-com
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "bloco");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "bloco");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-com");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1012,8 +1032,8 @@
             //comando lista-com | null
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "lista-com");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "lista-com");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/comando");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1039,52 +1059,51 @@
             //cham-proc | com-atrib | com-selecao | com-repeticao | com-desvio | com-leitura | com-escrita | decl-var | decl-const
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "comando");
-                    var lastFunc = this.getLastSyntaxFunc(); 
                     this.ignoreLastSyntaxFunc();
+                    this.writeInTab(token, "comando");
 
                     //cham-proc
-                    this.concatenateLastSyntaxFunc(lastFunc + "/cham-proc");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/cham-proc");
                     this.concatenateLastSyntaxStep("1");
                     var [isProc, _, _] = this.callFunction(token, lexeme);
 
                     //com-atrib
-                    this.concatenateLastSyntaxFunc(lastFunc + "/com-atrib");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/com-atrib");
                     this.concatenateLastSyntaxStep("1");
                     var [isAtrib, _, _] = this.callFunction(token, lexeme);
 
                     //com-selecao
-                    this.concatenateLastSyntaxFunc(lastFunc + "/com-selecao");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/com-selecao");
                     this.concatenateLastSyntaxStep("1");
                     var [isSelect, _, _] = this.callFunction(token, lexeme);
 
                     //com-repeticao
-                    this.concatenateLastSyntaxFunc(lastFunc + "/com-repeticao");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/com-repeticao");
                     this.concatenateLastSyntaxStep("1");
                     var [isRepet, _, _] = this.callFunction(token, lexeme);
 
                     //com-desvio
-                    this.concatenateLastSyntaxFunc(lastFunc + "/com-desvio");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/com-desvio");
                     this.concatenateLastSyntaxStep("1");
                     var [isByPass, _, _] = this.callFunction(token, lexeme);
 
                     //com-leitura
-                    this.concatenateLastSyntaxFunc(lastFunc + "/com-leitura");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/com-leitura");
                     this.concatenateLastSyntaxStep("1");
                     var [isRead, _, _] = this.callFunction(token, lexeme);
 
                     //com-escrita
-                    this.concatenateLastSyntaxFunc(lastFunc + "/com-escrita");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/com-escrita");
                     this.concatenateLastSyntaxStep("1");
                     var [isWrite, _, _] = this.callFunction(token, lexeme);
 
                     //decl-var
-                    this.concatenateLastSyntaxFunc(lastFunc + "/decl-var");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl-var");
                     this.concatenateLastSyntaxStep("1");
                     var [isVar, _, _] = this.callFunction(token, lexeme);
 
                     //decl-const
-                    this.concatenateLastSyntaxFunc(lastFunc + "/decl-const");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl-const");
                     this.concatenateLastSyntaxStep("1");
                     var [isConst, _, _] = this.callFunction(token, lexeme);
 
@@ -1101,8 +1120,8 @@
             //var = exp ;
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "com-atrib");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "com-atrib");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/var");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1113,8 +1132,8 @@
                     break;
                 case "2":
                     if ("OP_ATRIBUI" === token) {
-                        this.writeInTab(token, "=", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "=", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, true);
@@ -1122,6 +1141,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1134,8 +1154,9 @@
                     break;
                 case "4":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de atribuição. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1151,9 +1172,9 @@
             switch (step) {
                 case "1":
                     if ("PR_IF" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "com-selecao");
                         this.writeInTab(token, "IF", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1161,6 +1182,7 @@
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1173,8 +1195,8 @@
                     break;
                 case "3":
                     if ("PR_THEN" === token) {
-                        this.writeInTab(token, "THEN", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        this.writeInTab(token, "THEN", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de seleção. Esperava-se um 'THEN' e recebeu o valor '" + lexeme + "'.";
@@ -1184,6 +1206,7 @@
                     break;
                 case "4":
                     this.replaceLastSyntaxStep("5");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1196,12 +1219,13 @@
                     break;
                 case "5":
                     if ("PR_END_IF" === token) {
-                        this.writeInTab(token, "END-IF", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "END-IF", lexeme, 2);
+                        return result;
                     }
                     else if ("PR_ELSE" === token) {
-                        this.writeInTab(token, "ELSE", lexeme, 1);
                         this.replaceLastSyntaxStep("6");
+                        this.writeInTab(token, "ELSE", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de seleção. Esperava-se um 'ELSE' ou um 'ENDIF' e recebeu o valor '" + lexeme + "'.";
@@ -1211,6 +1235,7 @@
                     break;
                 case "6":
                     this.replaceLastSyntaxStep("7");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1223,8 +1248,9 @@
                     break;
                 case "7":
                     if ("PR_END_IF" === token) {
-                        this.writeInTab(token, "END-IF", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "END-IF", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de seleção. Esperava-se um 'ENDIF' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1240,27 +1266,27 @@
             switch (step) {
                 case "1":
                     if ("PR_WHILE" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "com-repeticao");
                         this.writeInTab(token, "WHILE", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     }
                     else if ("PR_DO" === token) {
+                        this.replaceLastSyntaxStep("6");
                         this.writeInTab(token, "com-repeticao");
                         this.writeInTab(token, "DO", lexeme, 1);
-                        this.replaceLastSyntaxStep("6");
                         return [true, false, false];
                     }
                     else if ("PR_REPEAT" === token) {
+                        this.replaceLastSyntaxStep("10");
                         this.writeInTab(token, "com-repeticao");
                         this.writeInTab(token, "REPEAT", lexeme, 1);
-                        this.replaceLastSyntaxStep("10");
                         return [true, false, false];
                     }
                     else if ("PR_FOR" === token) {
+                        this.replaceLastSyntaxStep("14");
                         this.writeInTab(token, "com-repeticao");
                         this.writeInTab(token, "FOR", lexeme, 1);
-                        this.replaceLastSyntaxStep("14");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1268,6 +1294,7 @@
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1280,8 +1307,8 @@
                     break;
                 case "3":
                     if ("PR_DO" === token) {
-                        this.writeInTab(token, "DO", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        this.writeInTab(token, "DO", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var func = this.getSyntaxFunc();
@@ -1296,6 +1323,7 @@
                             var splittedSteps = steps.split(';');
                             if (splittedSteps[indexOfLastRepeatCommand] === "7") {
                                 this.replaceSyntaxStep("9", indexOfLastRepeatCommand);
+                                this.writeInTab(token, "hidden");
                                 this.removeTab();
                             }
                         } else {
@@ -1308,6 +1336,7 @@
                     break;
                 case "4":
                     this.replaceLastSyntaxStep("5");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1320,8 +1349,9 @@
                     break;
                 case "5":
                     if ("PR_LOOP" === token) {
-                        this.writeInTab(token, "LOOP", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "LOOP", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'LOOP' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1330,6 +1360,7 @@
                     break;
                 case "6":
                     this.replaceLastSyntaxStep("7");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1341,9 +1372,9 @@
                     return [true, false, false];
                     break;
                 case "7":
-                    if ("PR_WHILE" === token) { 
-                        this.writeInTab(token, "WHILE", lexeme, 1);
+                    if ("PR_WHILE" === token) {
                         this.replaceLastSyntaxStep("8");
+                        this.writeInTab(token, "WHILE", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'WHILE' e recebeu o valor '" + lexeme + "'.";
@@ -1353,6 +1384,7 @@
                     break;
                 case "8":
                     this.replaceLastSyntaxStep("9");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1366,8 +1398,9 @@
                 case "9":
                 case "13":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1376,6 +1409,7 @@
                     break;
                 case "10":
                     this.replaceLastSyntaxStep("11");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1388,8 +1422,8 @@
                     break;
                 case "11":
                     if ("PR_UNTIL" === token) {
-                        this.writeInTab(token, "UNTIL", lexeme, 1);
                         this.replaceLastSyntaxStep("12");
+                        this.writeInTab(token, "UNTIL", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'UNTIL' e recebeu o valor '" + lexeme + "'.";
@@ -1399,6 +1433,7 @@
                     break;
                 case "12":
                     this.replaceLastSyntaxStep("13");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1411,8 +1446,8 @@
                     break;
                 case "14":
                     if ("IDENTIFICADOR" === token) {
-                        this.writeInTab(token, "ID", lexeme, 1);
                         this.replaceLastSyntaxStep("15");
+                        this.writeInTab(token, "ID", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um IDENTIFICADOR e recebeu o valor '" + lexeme + "'.";
@@ -1422,8 +1457,8 @@
                     break;
                 case "15":
                     if ("OP_ATRIBUI" === token) {
-                        this.writeInTab(token, "=", lexeme, 1);
                         this.replaceLastSyntaxStep("16");
+                        this.writeInTab(token, "=", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um '=' e recebeu o valor '" + lexeme + "'.";
@@ -1433,6 +1468,7 @@
                     break;
                 case "16":
                     this.replaceLastSyntaxStep("17");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-soma");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1445,8 +1481,8 @@
                     break;
                 case "17":
                     if ("PR_TO" === token) {
-                        this.writeInTab(token, "TO", lexeme, 1);
                         this.replaceLastSyntaxStep("18");
+                        this.writeInTab(token, "TO", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'TO' e recebeu o valor '" + lexeme + "'.";
@@ -1456,6 +1492,7 @@
                     break;
                 case "18":
                     this.replaceLastSyntaxStep("19");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-soma");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1468,8 +1505,8 @@
                     break;
                 case "19":
                     if ("PR_DO" === token) {
-                        this.writeInTab(token, "DO", lexeme, 1);
                         this.replaceLastSyntaxStep("20");
+                        this.writeInTab(token, "DO", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'DO' e recebeu o valor '" + lexeme + "'.";
@@ -1479,6 +1516,7 @@
                     break;
                 case "20":
                     this.replaceLastSyntaxStep("21");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/bloco");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1491,8 +1529,9 @@
                     break;
                 case "21":
                     if ("PR_NEXT" === token) {
-                        this.writeInTab(token, "NEXT", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "NEXT", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'NEXT' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1508,20 +1547,20 @@
             switch (step) {
                 case "1":
                     if ("PR_RETURN" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "com-desvio");
                         this.writeInTab(token, "RETURN", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else if ("PR_BREAK" === token) {
+                        this.replaceLastSyntaxStep("3");
                         this.writeInTab(token, "com-desvio");
                         this.writeInTab(token, "BREAK", lexeme, 1);
-                        this.replaceLastSyntaxStep("3");
                         return [true, false, false];
 
                     } else if ("PR_CONTINUE" === token) {
+                        this.replaceLastSyntaxStep("3");
                         this.writeInTab(token, "com-desvio");
                         this.writeInTab(token, "CONTINUE", lexeme, 1);
-                        this.replaceLastSyntaxStep("3");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1529,6 +1568,7 @@
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1541,8 +1581,9 @@
                     break;
                 case "3":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de desvio. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1558,15 +1599,15 @@
             switch (step) {
                 case "1":
                     if ("PR_SCAN" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "com-leitura");
                         this.writeInTab(token, "SCAN", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
 
                     } else if ("PR_SCAN_LN" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "com-leitura");
                         this.writeInTab(token, "SCANLN", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
 
                     } else {
@@ -1575,8 +1616,8 @@
                     break;
                 case "2":
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
 
                     } else {
@@ -1587,6 +1628,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-var");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1599,8 +1641,8 @@
                     break;
                 case "4":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
                         this.replaceLastSyntaxStep("5");
+                        this.writeInTab(token, ")", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de leitura. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
@@ -1610,8 +1652,9 @@
                     break;
                 case "5":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de leitura. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1627,14 +1670,14 @@
             switch (step) {
                 case "1":
                     if ("PR_PRINT" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "com-escrita");
                         this.writeInTab(token, "PRINT", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else if ("PR_PRINT_LN" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "com-escrita");
                         this.writeInTab(token, "PRINTLN", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1642,8 +1685,8 @@
                     break;
                 case "2":
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de escrita. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
@@ -1653,6 +1696,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-var");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1665,8 +1709,8 @@
                     break;
                 case "4":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
                         this.replaceLastSyntaxStep("5");
+                        this.writeInTab(token, ")", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de escrita. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
@@ -1676,8 +1720,9 @@
                     break;
                 case "5":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de escrita. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1693,9 +1738,9 @@
             switch (step) {
                 case "1":
                     if ("IDENTIFICADOR" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "cham-proc");
                         this.writeInTab(token, "ID", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1703,8 +1748,8 @@
                     break;
                 case "2":
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, true);
@@ -1712,6 +1757,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/args");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1719,8 +1765,8 @@
                     break;
                 case "4":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
                         this.replaceLastSyntaxStep("5");
+                        this.writeInTab(token, ")", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de chamar procedimento. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
@@ -1730,8 +1776,9 @@
                     break;
                 case "5":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de chamar procedimento. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1747,8 +1794,8 @@
             //exp , lista-exp | exp
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "lista-exp");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "lista-exp");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1759,8 +1806,8 @@
                     break;
                 case "2":
                     if ("SIN_V" === token) {
-                        this.writeInTab(token, ",", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, ",", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1768,6 +1815,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1786,8 +1834,8 @@
             //exp-soma op-relac exp-soma | exp-soma
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "exp");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "exp");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-soma");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1798,8 +1846,8 @@
                     break;
                 case "2":
                     if (this.relacionalOp().find(f => f === token)) {
-                        this.writeInTab(token, "op-relac", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "op-relac", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1807,6 +1855,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-soma");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1830,8 +1879,8 @@
             //exp-mult op-soma exp-soma | exp-mult
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "exp-soma");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "exp-soma");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-mult");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1842,8 +1891,8 @@
                     break;
                 case "2":
                     if (this.sumOp().find(f => f === token)) {
-                        this.writeInTab(token, "op-soma", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "op-soma", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1851,6 +1900,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc("exp-soma");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1874,8 +1924,8 @@
             //exp-mult op-mult exp-simples | exp-simples
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "exp-mult");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "exp-mult");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-simples");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1886,8 +1936,8 @@
                     break;
                 case "2":
                     if (this.multiplicationOp().find(f => f === token)) {
-                        this.writeInTab(token, "op-mult", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "op-mult", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -1895,6 +1945,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-simples");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1918,30 +1969,31 @@
             //( exp ) | var | cham-func | literal | op-unario exp
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "exp-simples");
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("2");
+                        this.writeInTab(token, "exp-simples");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
                     } else if (this.unaryOp().find(f => f === token)) {
-                        this.writeInTab(token, "op-unario", lexeme, 1);
                         this.replaceLastSyntaxStep("4");
+                        this.writeInTab(token, "exp-simples");
+                        this.writeInTab(token, "op-unario", lexeme, 1);
                         return [true, false, false];
                     } else {
-                        var lastFunc = this.getLastSyntaxFunc();
                         this.ignoreLastSyntaxFunc();
+                        this.writeInTab(token, "exp-simples");
                         //var
-                        this.concatenateLastSyntaxFunc(lastFunc + "/var");
+                        this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/var");
                         this.concatenateLastSyntaxStep("1");
                         var [isVar, _, _] = this.callFunction(token, lexeme);
 
                         //cham-func
-                        this.concatenateLastSyntaxFunc(lastFunc + "/cham-func");
+                        this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/cham-func");
                         this.concatenateLastSyntaxStep("1");
                         var [isFunc, _, _] = this.callFunction(token, lexeme);
 
                         //literal
-                        this.concatenateLastSyntaxFunc(lastFunc + "/literal");
+                        this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/literal");
                         this.concatenateLastSyntaxStep("1");
                         var [isLiteral, _, _] = this.callFunction(token, lexeme);
 
@@ -1953,6 +2005,7 @@
                     break;
                 case "2":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1965,8 +2018,9 @@
                     break;
                 case "3":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ")", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de expressão simples. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -1975,6 +2029,7 @@
                     break;
                 case "4":
                     this.replaceLastSyntaxStep("3");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -1983,7 +2038,9 @@
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
-                    return this.removeLast(true, false, false);
+                    var result = this.removeLast(true, false, false);
+                    this.writeInTab(token, "hidden");
+                    return result;
                     break;
                 default:
             }
@@ -1997,8 +2054,9 @@
                         .concat(this.booleanValue())
                         .find(f => f === token)
                     ) {
-                        this.writeInTab(token, "literal", lexeme);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "literal", lexeme, 1);
+                        return result;
                     } else {
                         return this.removeLast(false, false, false);
                     }
@@ -2017,9 +2075,9 @@
             switch (step) {
                 case "1":
                     if ("IDENTIFICADOR" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "cham-func");
                         this.writeInTab(token, "ID", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -2027,8 +2085,8 @@
                     break;
                 case "2":
                     if ("SIN_PAR_A" === token) {
-                        this.writeInTab(token, "(", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "(", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, true);
@@ -2036,6 +2094,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/args");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -2043,8 +2102,8 @@
                     break;
                 case "4":
                     if ("SIN_PAR_F" === token) {
-                        this.writeInTab(token, ")", lexeme, 1);
                         this.replaceLastSyntaxStep("5");
+                        this.writeInTab(token, ")", lexeme, 1);
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de chamada de função. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
@@ -2054,8 +2113,9 @@
                     break;
                 case "5":
                     if ("SIN_PV" === token) {
-                        this.writeInTab(token, ";", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, ";", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de chamada de função. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -2070,10 +2130,9 @@
             //lista-exp | null
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "args");
-                    var lastFunc = this.getLastSyntaxFunc();
                     this.ignoreLastSyntaxFunc();
-                    this.concatenateLastSyntaxFunc(lastFunc + "/lista-exp");
+                    this.writeInTab(token, "args");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
@@ -2090,9 +2149,9 @@
             switch (step) {
                 case "1":
                     if ("IDENTIFICADOR" === token) {
+                        this.replaceLastSyntaxStep("2");
                         this.writeInTab(token, "var");
                         this.writeInTab(token, "ID", lexeme, 1);
-                        this.replaceLastSyntaxStep("2");
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -2100,8 +2159,8 @@
                     break;
                 case "2":
                     if ("SIN_COL_A" === token) {
-                        this.writeInTab(token, "[", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, "[", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -2109,6 +2168,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("4");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/exp-soma");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -2121,8 +2181,9 @@
                     break;
                 case "4":
                     if ("SIN_COL_F" === token) {
-                        this.writeInTab(token, "]", lexeme, 1);
-                        return this.removeLast(true, false, false);
+                        var result = this.removeLast(true, false, false);
+                        this.writeInTab(token, "]", lexeme, 2);
+                        return result;
                     } else {
                         var error = "Erro sintático no comando de variável. Esperava-se um ']' e recebeu o valor '" + lexeme + "'.";
                         this.writeInTab(token, "Erro", error, 1);
@@ -2137,8 +2198,8 @@
             //var , lista-var | var
             switch (step) {
                 case "1":
-                    this.writeInTab(token, "lista-var");
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "lista-var");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/var");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -2149,8 +2210,8 @@
                     break;
                 case "2":
                     if ("SIN_V" === token) {
-                        this.writeInTab(token, ",", lexeme, 1);
                         this.replaceLastSyntaxStep("3");
+                        this.writeInTab(token, ",", lexeme, 1);
                         return [true, false, false];
                     } else {
                         return this.removeLast(false, false, false);
@@ -2158,6 +2219,7 @@
                     break;
                 case "3":
                     this.replaceLastSyntaxStep("2");
+                    this.writeInTab(token, "hidden");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/var");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);

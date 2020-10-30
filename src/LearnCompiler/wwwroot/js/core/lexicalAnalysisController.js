@@ -907,10 +907,7 @@
                             }
                         }
                     }
-                    if (!separators.includes(word))
-                        this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
-                    else 
-                        this.setElementAttribute("state", "word", "");
+                    this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
 
 
                     word = this.getWord();
@@ -1136,6 +1133,9 @@
         startAnalysis: function (key, isRepeat) {
             if (!isRepeat)
                 this.setElementAttribute("state", "entire_code", this.getEntireCurrentCode());
+
+            if (key === 'Enter')
+                key = " ";
 
             var needRepeat = true;
             repeatWord = "";
