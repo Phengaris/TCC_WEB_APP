@@ -33,43 +33,46 @@
     <span id="state" state="1" state_init="1" word="" token="" entire_code="" syntaxFunc="programa" syntaxStep="1"></span>
 </div>
 
-<body>
-    <div class="container">
-        <div class="row dinamicMinHeight">
-            <div class="col-4">
-                <div id="userCodeHeader" class="row">
-                    <label id="userCodeLabel">SEU CÓDIGO EM D+</label>
-                    <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompile</button>
-                </div>
-                <div id="container">
-                    <div id="highlighterContainer" onclick="TextBoxComponent.onClick()">
-                        <div id="highlighter" class="row"></div>
-                    </div>
-                    <div id="inputContainer">
-                        <textarea id="userCode"
-                                  onkeyup="TextBoxComponent.onKeyUp(event)"
-                                  onpaste="TextBoxComponent.onPaste(event)"></textarea>
-                    </div>
-                </div>
+<div class="h-50 row">
+    <div class="col-4">
+        <div class="pb-1">
+            <label>SEU CÓDIGO EM D+</label>
+            <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompilar</button>
+        </div>
+        <div class="w-100 position-relative">
+            <div id="highlighterContainer" class="h-100" onclick="TextBoxComponent.onClick()">
+                <div id="highlighter" class="row"></div>
             </div>
-            <div class="col-8 row">
-                <div class="fullWidth">
-                    <button class="tabLink" onclick="General.openTab('lexicalAnalysis', this, 'darkturquoise')" id="defaultOpen">Análise Léxica</button>
-                    <button class="tabLink" onclick="General.openTab('syntaxAnalisys', this, 'darkturquoise')">Análise Sintática</button>
-                    <button class="tabLink" onclick="General.openTab('symbolTable', this, 'darkturquoise')">Tabela de Símbolos</button>
-                    <button class="tabLink" onclick="General.openTab('generatedErrors', this, 'crimson')" hidden="hidden" id="generatedErrorsButton">Erros</button>
-                </div>
+            <div id="inputContainer" class="w-100">
+                <textarea id="userCode"
+                          onkeyup="TextBoxComponent.onKeyUp(event)"
+                          onpaste="TextBoxComponent.onPaste(event)"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="">
+            <button class="tabLink" onclick="General.openTab('lexicalAnalysis', this, 'black')" id="defaultOpen">Análise Léxica</button>
+            <button class="tabLink" onclick="General.openTab('syntaxAnalisys', this, 'black')">Análise Sintática</button>
+            <button class="tabLink" onclick="General.openTab('symbolTable', this, 'black')">Tabela de Símbolos</button>
+            <button class="tabLink invisible" onclick="General.openTab('generatedErrors', this, 'crimson')" id="generatedErrorsButton">Erros</button>
+        </div>
 
-                <div id="lexicalAnalysis" class="tabContent">
-                    <canvas id="canvas">
-                        Your browser does not support the HTML5 canvas tag.
-                    </canvas>
-                </div>
+        <div id="lexicalAnalysis" class="tabContent">
+            <canvas id="canvas">
+                Your browser does not support the HTML5 canvas tag.
+            </canvas>
+        </div>
 
-                <div id="syntaxAnalisys" class="tabContent">
-                </div>
+        <div id="syntaxAnalisys" class="tabContent wrapper">
+            <div class="scrollable-row">
+                <div id="syntaxAnalisysContent" class="scrollable-container"></div>
+            </div>
+        </div>
 
-                <div id="symbolTable" class="tabContent">
+        <div id="symbolTable" class="tabContent wrapper">
+            <div class="scrollable-row">
+                <div class="scrollable-container">
                     <table class="table">
                         <thead>
                             <tr>
@@ -81,30 +84,31 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div id="generatedErrors" class="tabContent" hidden="hidden">
-                </div>
             </div>
         </div>
-        <div class="row minimalMargin">
-            <div class="col-12 fullHeight">
-                <h4>HISTÓRICO DA ANÁLISE LÉXICA</h4>
 
-                <div class="slideshow-container  dinamicHeight">
+        <div id="generatedErrors" class="tabContent wrapper" hidden="hidden">
+            <div id="generatedErrorsContent" class="scrollable-container"></div>
+        </div>
+        </div>
+</div>
+<div class="h-50 row">
+    <div class="col-12 h-100">
+        <h4>HISTÓRICO DA ANÁLISE LÉXICA</h4>
 
-                    <div id="slideshow_child" class="fullHeight text-center"></div>
+        <div class="slideshow-container h-100">
 
-                    <a class="prev" onclick="General.plusHistoryAnalexSlides(-1)">&#10094;</a>
-                    <a class="next" onclick="General.plusHistoryAnalexSlides(1)">&#10095;</a>
+            <div id="slideshow_child" class="h-100 text-center"></div>
 
-                </div>
-            </div>
+            <a class="prev" onclick="General.plusHistoryAnalexSlides(-1)">&#10094;</a>
+            <a class="next" onclick="General.plusHistoryAnalexSlides(1)">&#10095;</a>
+
         </div>
     </div>
-    <script>
-        window.onload = function () {
-            TextBoxComponent.init()
-        };
-        document.getElementById("defaultOpen").click();
-    </script>
-</body>
+</div>
+<script>
+    window.onload = function () {
+        TextBoxComponent.init()
+    };
+    document.getElementById("defaultOpen").click();
+</script>

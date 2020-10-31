@@ -10,8 +10,12 @@
             tablinks = document.getElementsByClassName("tabLink");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].style.backgroundColor = "";
+                tablinks[i].style.color = "";
             }
             document.getElementById(tabName).style.display = "block";
+            if (color === "black") {
+                e.style.color = "lightgray"
+            }
             e.style.backgroundColor = color;
         },
         plusHistoryAnalexSlides: function (n) {

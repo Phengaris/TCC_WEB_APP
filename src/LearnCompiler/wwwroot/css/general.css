@@ -1,18 +1,59 @@
-﻿.tabLink {
-    background-color: paleturquoise;
-    color: darkslategrey;
+﻿*:focus {
+    outline: 0 !important;
+}
+
+html, body {
+    height: 100% !important;
+}
+
+textarea {
+    background-color: transparent;
+    width: 100% !important;
+    border-color: #d3d3d3 !important;
+    resize: none;
+    height: 30vh;
+}
+
+#highlighterContainer, #inputContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#highlighter {
+    padding: 0.5vh;
+    color: transparent;
+    background-color: transparent;
+    margin: 0px;
+}
+
+.tabLink {
+    background-color: darkgray;
+    color: black;
     float: left;
     border: none;
     outline: none;
-    cursor: pointer;
     width: 25%;
 }
 
-    .tabLink:hover {
-        background-color: mediumturquoise;
-        border: none;
-        outline: none;
-    }
+.selectedTabLink {
+    background-color: black;
+    color: lightgray;
+    float: left;
+    border: none;
+    outline: none;
+    width: 25%;
+}
+
+.tabLink:hover {
+    background-color: lightgray;
+    border: none;
+    outline: none;
+}
+
+#errorButton {
+    background-color: tomato;
+}
 
 .tabContent {
     border: 1px solid #d3d3d3;
@@ -25,27 +66,32 @@
     text-align: center;
 }
 
-.dinamicHeight {
-    height: 40vh;
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
-.dinamicMinHeight {
-    min-height: 40vh;
-}
-
-.fullWidth {
+.scrollable-row {
+    display: flex;
+    flex-direction: row;
     width: 100%;
+    margin-top: 10px;
 }
 
-.fullHeight {
-    height: 100%;
+.scrollable-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 30vh;
+    overflow: auto;
 }
 
 #canvas {
     width: auto;
-    max-height: 35vh;
-    max-width: 90%;
-    margin-top: 3vh;
+    max-height: 30vh;
+    max-width: 80%;
+    margin-top: 1vh;
 }
 
 .slideshow-container {
@@ -84,71 +130,11 @@
 }
 
     .prev:hover, .next:hover {
-        background-color: rgba(0,0,0,0.8);
+        background-color: lightgray;
     }
 
 .text {
     height: 10%;
     width: 100%;
     text-align: center;
-}
-
-.minimalMargin {
-    margin-top: 5%;
-}
-
-#userCode {
-    width: 100%;
-    border: 1px solid #d3d3d3;
-}
-
-#userCodeHeader {
-    padding: inherit;
-    padding-bottom: 3%;
-}
-
-#userCodeLabel {
-    width: 70%;
-}
-
-#recompileButton {
-    width: 30%;
-}
-
-#errorButton {
-    background-color: tomato;
-}
-
-#container {
-    position: relative;
-}
-#highlighterContainer {
-    position: absolute;
-    width: 100%;
-    height: 95%;
-    left: 0;
-    top: 0;
-    cursor: text
-}
-#inputContainer {
-    position: absolute;
-    width: 100%;
-    height: 95%;
-    left: 0;
-    top: 0;
-}
-#highlighter {
-    padding: 7px;
-    color: #eeeeee;
-    background-color: #ffffff;
-    margin: 0px;
-    font-size: 13px;
-    font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
-}
-textarea {
-    background-color: transparent;
-    padding: 5px;
-    margin: 0px;
-    font-size: 13px;
-    font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
 }
