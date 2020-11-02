@@ -727,7 +727,7 @@
             else {
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE_INVALIDO");
                 var error = "Foi impossível mapear o caractere '" + character + "'!";
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, character);
             }
         },
         analysisCase2: function (character) {
@@ -748,7 +748,7 @@
                     repeatWord = character;
                     this.setElementAttribute("state", "state", "ERRO_NUM_REAL");
                     var error = "Erro no lexema '" + this.getWord() + "'. O lexema esperava um número e recebeu o valor  '" + character + "'";
-                    ErrorManager.addError(error);
+                    ErrorManager.addError(error, this.getWord());
                 } else {
                     repeatWord = character;
                     this.setElementAttribute("state", "state", "NUM_REAL");
@@ -764,7 +764,7 @@
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE");
                 var error = "Erro no lexema '" + this.getWord() + "'. O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, this.getWord());
             }
         },
         analysisCase5: function (character) {
@@ -774,7 +774,7 @@
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE");
                 var error = "Erro no lexema '" + this.getWord() + "'. O tipo char suporta 0 ou 1 dígito e deve ser fechado com aspas simples.";
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, this.getWord());
             }
         },
         analysisCase6: function (character) {
@@ -786,7 +786,7 @@
                 repeatWord = character;
                 this.setElementAttribute("state", "state", "ERRO_STRING");
                 var error = "Erro no lexema '" + this.getWord() + "'. O tipo string suporta 0 ou mais dígitos e deve ser fechado com aspas duplas."
-                ErrorManager.addError(error);
+                ErrorManager.addError(error, this.getWord());
             }
         },
         analysisCase7: function (character) {
@@ -899,6 +899,7 @@
                         if (images.length > 0) {
                             lastImage = images[images.length - 1];
                             word = lastImage.getAttribute("word");
+                            ErrorManager.clearError(word);
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
                             if (token.length > 0) {
@@ -917,6 +918,7 @@
                         if (images.length > 0) {
                             lastImage = images[images.length - 1];
                             word = lastImage.getAttribute("word");
+                            ErrorManager.clearError(word);
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
                             if (token.length > 0) {

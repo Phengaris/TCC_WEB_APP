@@ -40,8 +40,8 @@
             <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompilar</button>
         </div>
         <div class="w-100 position-relative">
-            <div id="highlighterContainer" class="h-100" onclick="TextBoxComponent.onClick()">
-                <div id="highlighter" class="row"></div>
+            <div id="highlighterContainer" class="h-100" onclick="TextBoxComponent.onClick()" contenteditable="true">
+                <div id="highlighter"></div>
             </div>
             <div id="inputContainer" class="w-100">
                 <textarea id="userCode"

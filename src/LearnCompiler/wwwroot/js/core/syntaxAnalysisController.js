@@ -473,7 +473,7 @@
 
                     if (!isConst && !isFunc && !isProc && !isVar && !isVar && !isMain) {
                         var error = "Erro sintático na declaração. Esperava-se uma declaração: constante, variável, procedimento ou função.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         this.replaceLastSyntaxFunc(originalLastFunc);
                         return [false, true, false];
@@ -504,7 +504,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração da função principal. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -516,7 +516,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração da função principal. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -529,7 +529,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração da função principal. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -542,7 +542,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático na declaração da função principal. Esperava-se um END e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -571,7 +571,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de constante. Esperava-se um IDENTIFICADOR e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -583,7 +583,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de constante. Esperava-se um '=' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -596,7 +596,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de constante. Esperava-se um literal.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -609,7 +609,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático na declaração de constante. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -639,7 +639,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de variável. Esperava-se uma especificação de tipo.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -653,7 +653,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme)
                     if (!success) {
                         var error = "Erro sintático na declaração de variável. Esperava-se uma lista de variáveis";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -666,7 +666,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático na declaração de variável. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -713,7 +713,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de procedimento. Esperava-se uma especificação de um tipo.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -727,7 +727,7 @@
                     } else {
                         this.writeInTab("", "hidden");
                         var error = "Erro sintático na declaração de procedimento. Esperava-se um IDENTIFICADOR e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -740,7 +740,7 @@
                     } else {
                         this.writeInTab("", "hidden");
                         var error = "Erro sintático na declaração de procedimento. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -760,7 +760,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de procedimento. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -773,7 +773,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de procedimento. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -786,7 +786,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático na declaração de procedimento. Esperava-se um 'ENDSUB' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -816,7 +816,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de função. Esperava-se uma especificação de um tipo.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -829,7 +829,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de função. Esperava-se um IDENTIFICADOR e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -841,7 +841,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de função. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -861,7 +861,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de função. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -874,7 +874,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de função. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -888,7 +888,7 @@
                     } else {
                         this.writeInTab(token, "Erro", error, 1);
                         var error = "Erro sintático na declaração de função. Esperava-se um 'ENDFUNCTION' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -945,7 +945,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na lista de parâmetros. Esperava-se um parâmetro.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -976,7 +976,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de parâmetro. Esperava-se uma especificação de um tipo.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -990,7 +990,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de parâmetro. Esperava-se uma lista de variáveis.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1003,7 +1003,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático na declaração de parâmetro. Esperava-se um 'BY' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1014,7 +1014,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na declaração de parâmetro. Esperava-se um modo.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1184,7 +1184,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de atribuição. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1197,7 +1197,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de atribuição. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1227,7 +1227,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de seleção. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1240,7 +1240,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de seleção. Esperava-se um 'THEN' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1253,7 +1253,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de seleção. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1271,7 +1271,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de seleção. Esperava-se um 'ELSE' ou um 'ENDIF' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1284,7 +1284,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de seleção. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1297,7 +1297,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de seleção. Esperava-se um 'ENDIF' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1345,7 +1345,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1374,7 +1374,7 @@
                             }
                         } else {
                             var error = "Erro sintático no comando de repetição. Esperava-se um 'DO' e recebeu o valor '" + lexeme + "'.";
-                            ErrorManager.addError(error);
+                            ErrorManager.addError(error, lexeme);
                             this.writeInTab(token, "Erro", error, 1);
                             return [false, true, false];
                         }
@@ -1389,7 +1389,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1402,7 +1402,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'LOOP' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1415,7 +1415,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1428,7 +1428,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'WHILE' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1441,7 +1441,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1455,7 +1455,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1468,7 +1468,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se um bloco.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1481,7 +1481,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'UNTIL' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1494,7 +1494,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1507,7 +1507,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um IDENTIFICADOR e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1519,7 +1519,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um '=' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1532,7 +1532,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se uma expressão de soma.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1545,7 +1545,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'TO' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1558,7 +1558,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se uma expressão de soma.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1571,7 +1571,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'DO' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1584,7 +1584,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de repetição. Esperava-se uma expressão de soma.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1597,7 +1597,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de repetição. Esperava-se um 'NEXT' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1638,7 +1638,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de desvio. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1651,7 +1651,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de desvio. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1688,7 +1688,7 @@
 
                     } else {
                         var error = "Erro sintático no comando de leitura. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1701,7 +1701,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de leitura. Esperava-se uma lista de variáveis.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1714,7 +1714,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de leitura. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1726,7 +1726,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de leitura. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1760,7 +1760,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de escrita. Esperava-se um '(' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1773,7 +1773,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de escrita. Esperava-se uma lista de variáveis.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1786,7 +1786,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de escrita. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1798,7 +1798,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de escrita. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1844,7 +1844,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de chamar procedimento. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1856,7 +1856,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de chamar procedimento. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1897,7 +1897,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na lista de expressões. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1938,7 +1938,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de expressão. Esperava-se uma expressão de soma.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -1984,7 +1984,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de expressão de soma. Esperava-se uma expressão de soma.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2030,7 +2030,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático no comando de expressão de multiplicação. Esperava-se uma expressão simples.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2091,7 +2091,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na expressão simples. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2104,7 +2104,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de expressão simples. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2116,7 +2116,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na expressão simples. Esperava-se uma expressão.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2189,7 +2189,7 @@
                         return [true, false, false];
                     } else {
                         var error = "Erro sintático no comando de chamada de função. Esperava-se um ')' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2201,7 +2201,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de chamada de função. Esperava-se um ';' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2258,7 +2258,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na variável. Esperava-se uma expressão de soma.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2271,7 +2271,7 @@
                         return result;
                     } else {
                         var error = "Erro sintático no comando de variável. Esperava-se um ']' e recebeu o valor '" + lexeme + "'.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
@@ -2311,7 +2311,7 @@
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
                         var error = "Erro sintático na lista de variáveis. Esperava-se uma variável.";
-                        ErrorManager.addError(error);
+                        ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];
                     }
