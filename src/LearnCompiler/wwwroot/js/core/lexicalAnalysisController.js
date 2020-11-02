@@ -581,6 +581,7 @@
         { lexeme: "NOT", token: "PR_NOT" }
     ];
     var separators = [" ", "Enter", "Tab"];
+    var separatorsCode = [10];
     return {
         analysis: function (character) {
             var state = this.getState();
@@ -685,7 +686,7 @@
             }
         },
         analysisCase1: function (character) {
-            if (separators.includes(character))
+            if (separators.includes(character) || separatorsCode.includes(character.charCodeAt()))
                 this.setElementAttribute("state", "state", "SEPARADOR");
             else if ("," === character)
                 this.setElementAttribute("state", "state", "SIN_V");
@@ -725,7 +726,7 @@
                 this.setElementAttribute("state", "state", "12");
             else {
                 this.setElementAttribute("state", "state", "ERRO_CARACTERE_INVALIDO");
-                var error = "Foi impossível mapear o character '" + character + "'!";
+                var error = "Foi impossível mapear o caractere '" + character + "'!";
                 ErrorManager.addError(error);
             }
         },
@@ -861,7 +862,7 @@
                 this.setElementAttribute("state", "state", "LOOP1");
         },
         analysisCaseSeparator: function (character) {
-            if (!separators.includes(character))
+            if (!separators.includes(character) || !separatorsCode.includes(character.charCodeAt()))
                 repeatWord = character;
         },
         analyseEntireCode: function (code) {
@@ -1112,6 +1113,7 @@
             this.setElementAttribute("state", "entire_code", "");
             ErrorManager.clearErrors();
             SyntaxAnalysisController.clearSyntaxAnalysis();
+            SymbolTableController.clear();
             var entireCode = this.getEntireCurrentCode();
             this.analyseEntireCode(entireCode);
             document.getElementById("recompileButton").setAttribute("hidden", "hidden");
