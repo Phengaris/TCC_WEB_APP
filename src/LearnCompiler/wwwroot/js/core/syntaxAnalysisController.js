@@ -528,10 +528,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático na declaração da função principal. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -772,10 +769,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático na declaração de procedimento. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -873,10 +867,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático na declaração de função. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -1252,10 +1243,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático no comando de seleção. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -1283,10 +1271,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático no comando de seleção. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -1388,10 +1373,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático no comando de repetição. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -1414,10 +1396,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático no comando de repetição. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -1467,10 +1446,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático no comando de repetição. Esperava-se um bloco.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -1583,10 +1559,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático no comando de repetição. Esperava-se uma expressão de soma.";
-                        ErrorManager.addError(error, lexeme);
-                        this.writeInTab(token, "Erro", error, 1);
-                        return [false, true, false];
+                        return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
                     break;
@@ -1768,11 +1741,11 @@
                 case "3":
                     this.replaceLastSyntaxStep("4");
                     this.writeInTab(token, "hidden");
-                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-var");
+                    this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/lista-exp");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        var error = "Erro sintático no comando de escrita. Esperava-se uma lista de variáveis.";
+                        var error = "Erro sintático no comando de escrita. Esperava-se uma lista de expressões.";
                         ErrorManager.addError(error, lexeme);
                         this.writeInTab(token, "Erro", error, 1);
                         return [false, true, false];

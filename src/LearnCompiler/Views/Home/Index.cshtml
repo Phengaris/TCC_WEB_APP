@@ -8,7 +8,6 @@
 <script src="~/js/core/errorController.js"></script>
 <script src="~/js/core/symbolTableController.js"></script>
 <script src="~/js/components/textBoxComponent.js"></script>
-<link href="~/css/general.css" rel="stylesheet" />
 <div hidden="hidden">
     <img id="character_diagram" src="~/img/Diagrams/character_diagram.png" />
     <img id="bracket_diagram" src="~/img/Diagrams/bracket_diagram.png" />
@@ -32,80 +31,82 @@
 <div hidden="hidden">
     <span id="state" state="1" state_init="1" word="" token="" entire_code="" syntaxFunc="programa" syntaxStep="1"></span>
 </div>
-
-<div class="h-50 row">
-    <div class="col-4">
-        <div class="pb-1">
-            <label><strong>SEU CÓDIGO EM D+</strong></label>
-            <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompilar</button>
-        </div>
-        <div class="w-100 position-relative">
-            <div id="highlighterContainer" class="h-100" onclick="TextBoxComponent.onClick()" contenteditable="true">
-                <div id="highlighter"></div>
+<div class="vh-80">
+    <div class="h-50 row">
+        <div class="col-4">
+            <div class="pb-1">
+                <label><strong>SEU CÓDIGO EM D+</strong></label>
+                <button id="recompileButton" class="btn btn-sm btn-danger float-right" hidden="hidden" onclick="LexicalAnalysis.onRecompileClick()">Recompilar</button>
             </div>
-            <div id="inputContainer" class="w-100">
-                <textarea id="userCode"
-                          onkeyup="TextBoxComponent.onKeyUp(event)"
-                          onpaste="TextBoxComponent.onPaste(event)"></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="col-8">
-        <div class="">
-            <button class="tabLink" onclick="General.openTab('lexicalAnalysis', this, 'black')" id="defaultOpen">Análise Léxica</button>
-            <button class="tabLink" onclick="General.openTab('syntaxAnalisys', this, 'black')">Análise Sintática</button>
-            <button class="tabLink" onclick="General.openTab('symbolTable', this, 'black')">Tabela de Símbolos</button>
-            <button class="tabLink invisible" onclick="General.openTab('generatedErrors', this, 'crimson')" id="generatedErrorsButton">Erros</button>
-        </div>
-
-        <div id="lexicalAnalysis" class="tabContent">
-            <canvas id="canvas">
-                Your browser does not support the HTML5 canvas tag.
-            </canvas>
-        </div>
-
-        <div id="syntaxAnalisys" class="tabContent wrapper">
-            <div class="scrollable-row">
-                <div id="syntaxAnalisysContent" class="scrollable-container"></div>
-            </div>
-        </div>
-
-        <div id="symbolTable" class="tabContent wrapper">
-            <div class="scrollable-row">
-                <div class="scrollable-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Token</th>
-                                <th scope="col">Lexema</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+            <div class="w-100 position-relative">
+                <div id="highlighterContainer" class="h-100" onclick="TextBoxComponent.onClick()" contenteditable="true">
+                    <div id="highlighter"></div>
+                </div>
+                <div id="inputContainer" class="w-100">
+                    <textarea id="userCode"
+                              onkeyup="TextBoxComponent.onKeyUp(event)"
+                              onpaste="TextBoxComponent.onPaste(event)"></textarea>
                 </div>
             </div>
         </div>
+        <div class="col-8">
+            <div>
+                <button class="tabLink" onclick="General.openTab('lexicalAnalysis', this, 'black')" id="defaultOpen">Análise Léxica</button>
+                <button class="tabLink" onclick="General.openTab('syntaxAnalisys', this, 'black')">Análise Sintática</button>
+                <button class="tabLink" onclick="General.openTab('symbolTable', this, 'black')">Tabela de Símbolos</button>
+                <button class="tabLink invisible" onclick="General.openTab('generatedErrors', this, 'crimson')" id="generatedErrorsButton">Erros</button>
+            </div>
 
-        <div id="generatedErrors" class="tabContent wrapper" hidden="hidden">
-            <div id="generatedErrorsContent" class="scrollable-container"></div>
+            <div id="lexicalAnalysis" class="tabContent">
+                <canvas id="canvas">
+                    Your browser does not support the HTML5 canvas tag.
+                </canvas>
+            </div>
+
+            <div id="syntaxAnalisys" class="tabContent wrapper">
+                <div class="scrollable-row">
+                    <div id="syntaxAnalisysContent" class="scrollable-container"></div>
+                </div>
+            </div>
+
+            <div id="symbolTable" class="tabContent wrapper">
+                <div class="scrollable-row">
+                    <div class="scrollable-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Token</th>
+                                    <th scope="col">Lexema</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="generatedErrors" class="tabContent wrapper" hidden="hidden">
+                <div id="generatedErrorsContent" class="scrollable-container"></div>
+            </div>
         </div>
-        </div>
-</div>
-<div class="h-50 row">
-    <div class="col-12 h-100">
-        <label><strong>HISTÓRICO DA ANÁLISE LÉXICA</strong></label>
+    </div>
+    <div class="h-50 row">
+        <div class="col-12 h-100">
+            <label><strong>HISTÓRICO DA ANÁLISE LÉXICA</strong></label>
 
-        <div class="slideshow-container h-100">
+            <div class="slideshow-container h-100">
 
-            <div id="slideshow_child" class="h-100 text-center"></div>
+                <div id="slideshow_child" class="h-80 text-center"></div>
 
-            <a class="prev" onclick="General.plusHistoryAnalexSlides(-1)">&#10094;</a>
-            <a class="next" onclick="General.plusHistoryAnalexSlides(1)">&#10095;</a>
+                <a class="prev" onclick="General.plusHistoryAnalexSlides(-1)">&#10094;</a>
+                <a class="next" onclick="General.plusHistoryAnalexSlides(1)">&#10095;</a>
 
+            </div>
         </div>
     </div>
 </div>
+
 <script>
     window.onload = function () {
         TextBoxComponent.init()

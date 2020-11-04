@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - VL-D+</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/general.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -24,6 +25,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Documentação</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Documentation" asp-action="Grammar">Gramática</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Documentation" asp-action="Manual">Manual</a>
+                            </div>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
@@ -32,8 +40,8 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid h-75">
-        <main role="main" class="pb-3 h-100">
+    <div class="container-fluid mh-80">
+        <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>

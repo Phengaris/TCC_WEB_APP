@@ -1,0 +1,405 @@
+﻿@{
+    ViewData["Title"] = "Documentação - Gramática D+";
+}
+
+<h2 class="text-center">Gramática D+</h2>
+<br />
+
+<div id="accordion">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <button id="buttonOne" class="btn btn-link text-dark font-weight-bold w-100 text-left" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Declarações
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" id="programa">
+                        <a class="text-dark" href="#programa">programa</a>
+                        ➙
+                        <a class="text-dark" href="#listaDecl">lista-decl</a>
+                    </li>
+                    <li class="list-group-item" id="listaDecl">
+                        <a class="text-dark" href="#listaDecl">lista-decl</a>
+                        ➙
+                        <a class="text-dark" href="#listaDecl">lista-decl</a>
+                        <a class="text-dark" href="#decl">decl</a>
+                        |
+                        <a class="text-dark" href="#decl">decl</a>
+                    </li>
+                    <li class="list-group-item" id="decl">
+                        <a class="text-dark" href="#decl">decl</a>
+                        ➙
+                        <a class="text-dark" href="#declMain">decl-main</a>
+                        |
+                        <a class="text-dark" href="#declConst">decl-const</a>
+                        |
+                        <a class="text-dark" href="#declVar">decl-var</a>
+                        |
+                        <a class="text-dark" href="#declProc">decl-proc</a>
+                        |
+                        <a class="text-dark" href="#declFunc">decl-func</a>
+                    </li>
+                    <li class="list-group-item" id="declMain">
+                        <a class="text-dark" href="#declMain">decl-main</a>
+                        ➙ MAIN ( )
+                        <a class="text-dark" href="#bloco" onclick="getElementById('buttonTwo').click()">bloco</a>
+                        END
+                    </li>
+                    <li class="list-group-item" id="declConst">
+                        <a class="text-dark" href="#declConst">decl-const</a>
+                        ➙ CONST ID =
+                        <a class="text-dark" href="#literal" onclick="getElementById('buttonThree').click()">literal</a>
+                        ;
+                    </li>
+                    <li class="list-group-item" id="declVar">
+                        <a class="text-dark" href="#declVar">decl-var</a>
+                        ➙ VAR
+                        <a class="text-dark" href="#especTipo">espec-tipo</a>
+                        <a class="text-dark" href="#listaVar" onclick="getElementById('buttonThree').click()">lista-var</a>
+                        ;
+                    </li>
+                    <li class="list-group-item" id="especTipo">
+                        <a class="text-dark" href="#especTipo">espec-tipo</a>
+                        ➙ INT | FLOAT | CHAR | BOOL | STRING
+                    </li>
+                    <li class="list-group-item" id="declProc">
+                        <a class="text-dark" href="#declProc">decl-proc</a>
+                        ➙ SUB
+                        <a class="text-dark" href="#especTipo">espec-tipo</a>
+                        ID (
+                        <a class="text-dark" href="#params">params</a>
+                        )
+                        <a class="text-dark" href="#bloco" onclick="getElementById('buttonTwo').click()">bloco</a>
+                        ENDSUB
+                    </li>
+                    <li class="list-group-item" id="declFunc">
+                        <a class="text-dark" href="#declFunc">decl-func</a>
+                        ➙ FUNCTION
+                        <a class="text-dark" href="#especTipo">espec-tipo</a>
+                        ID (
+                        <a class="text-dark" href="#params">params</a>
+                        )
+                        <a class="text-dark" href="#bloco" onclick="getElementById('buttonTwo').click()">bloco</a>
+                        ENDFUNCTION
+                    </li>
+                    <li class="list-group-item" id="params">
+                        <a class="text-dark" href="#params">params</a>
+                        ➙
+                        <a class="text-dark" href="#listaParam">lista-param</a>
+                        | ε
+                    </li>
+                    <li class="list-group-item" id="listaParam">
+                        <a class="text-dark" href="#listaParam">lista-param</a>
+                        ➙
+                        <a class="text-dark" href="#listaParam">lista-param</a>
+                        ,
+                        <a class="text-dark" href="#param">param</a>
+                        |
+                        <a class="text-dark" href="#param">param</a>
+                    </li>
+                    <li class="list-group-item" id="param">
+                        <a class="text-dark" href="#param">param</a>
+                        ➙ VAR
+                        <a class="text-dark" href="#especTipo">espec-tipo</a>
+                        <a class="text-dark" href="#listaVar" onclick="getElementById('buttonThree').click()">lista-var</a>
+                        BY
+                        <a class="text-dark" href="#mode">mode</a>
+                    </li>
+                    <li class="list-group-item" id="mode">
+                        <a class="text-dark" href="#mode">mode</a>
+                        ➙ VALUE | REF
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+                <button id="buttonTwo" class="btn btn-link collapsed text-dark font-weight-bold w-100 text-left" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Comandos
+                </button>
+            </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" id="bloco">
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        ➙
+                        <a class="text-dark" href="#listaCom">lista-com</a>
+                    </li>
+                    <li class="list-group-item" id="listaCom">
+                        <a class="text-dark" href="#listaCom">lista-com</a>
+                        ➙
+                        <a class="text-dark" href="#comando">comando</a>
+                        <a class="text-dark" href="#listaCom">lista-com</a>
+                        | ε
+                    </li>
+                    <li class="list-group-item" id="comando">
+                        <a class="text-dark" href="#comando">comando</a>
+                        ➙
+                        <a class="text-dark" href="#chamProc">cham-proc</a>
+                        |
+                        <a class="text-dark" href="#comAtrib">com-atrib</a>
+                        |
+                        <a class="text-dark" href="#comSelecao">com-selecao</a>
+                        |
+                        <a class="text-dark" href="#comRepeticao">com-repeticao</a>
+                        |
+                        <a class="text-dark" href="#comDesvio">com-desvio</a>
+                        |
+                        <a class="text-dark" href="#comLeitura">com-leitura</a>
+                        |
+                        <a class="text-dark" href="#comEscrita">com-escrita</a>
+                        |
+                        <a class="text-dark" href="#declVar" onclick="getElementById('buttonOne').click()">decl-var</a>
+                        |
+                        <a class="text-dark" href="#declConst" onclick="getElementById('buttonOne').click()">decl-const</a>
+                    </li>
+                    <li class="list-group-item" id="comAtrib">
+                        <a class="text-dark" href="#comAtrib">com-atrib</a>
+                        ➙
+                        <a class="text-dark" href="#var" onclick="getElementById('buttonThree').click()">var</a>
+                        =
+                        <a class="text-dark" href="#exp" onclick="getElementById('buttonThree').click()">exp</a>
+                        ;
+                    </li>
+                    <li class="list-group-item" id="comSelecao">
+                        <a class="text-dark" href="#comSelecao">com-selecao</a>
+                        ➙ IF
+                        <a class="text-dark" href="#exp" onclick="getElementById('buttonThree').click()">exp</a>
+                        THEN
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        ENDIF | IF
+                        <a class="text-dark" href="#exp" onclick="getElementById('buttonThree').click()">exp</a>
+                        THEN
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        ELSE
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        ENDIF
+                    </li>
+                    <li class="list-group-item" id="comRepeticao">
+                        <a class="text-dark" href="#comRepeticao">com-repeticao</a>
+                        ➙ WHILE
+                        <a class="text-dark" href="#exp" onclick="getElementById('buttonThree').click()">exp</a>
+                        DO
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        LOOP | DO
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        WHILE
+                        <a class="text-dark" href="#exp" onclick="getElementById('buttonThree').click()">exp</a>
+                        ; | REPEAT
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        UNTIL
+                        <a class="text-dark" href="#exp" onclick="getElementById('buttonThree').click()">exp</a>
+                        ; | FOR ID =
+                        <a class="text-dark" href="#expSoma" onclick="getElementById('buttonThree').click()">exp-soma</a>
+                        TO
+                        <a class="text-dark" href="#expSoma" onclick="getElementById('buttonThree').click()">exp-soma</a>
+                        DO
+                        <a class="text-dark" href="#bloco">bloco</a>
+                        NEXT
+                    </li>
+                    <li class="list-group-item" id="comDesvio">
+                        <a class="text-dark" href="#comDesvio">com-desvio</a>
+                        ➙ RETURN
+                        <a class="text-dark" href="#exp" onclick="getElementById('buttonThree').click()">exp</a>
+                        ; | BREAK ; | CONTINUE ;
+                    </li>
+                    <li class="list-group-item" id="comLeitura">
+                        <a class="text-dark" href="#comLeitura">com-leitura</a>
+                        ➙ SCAN (
+                        <a class="text-dark" href="#listaVar" onclick="getElementById('buttonThree').click()">lista-var</a>
+                        ) ; | SCANLN (
+                        <a class="text-dark" href="#listaVar" onclick="getElementById('buttonThree').click()">lista-var</a>
+                        ) ;
+                    </li>
+                    <li class="list-group-item" id="comEscrita">
+                        <a class="text-dark" href="#comEscrita">com-escrita</a>
+                        ➙ PRINT (
+                        <a class="text-dark" href="#listaExp" onclick="getElementById('buttonThree').click()">lista-exp</a>
+                        ) ; | PRINTLN (
+                        <a class="text-dark" href="#listaExp" onclick="getElementById('buttonThree').click()">lista-exp</a>
+                        ) ;
+                    </li>
+                    <li class="list-group-item" id="chamProc">
+                        <a class="text-dark" href="#chamProc">cham-proc</a>
+                        ➙ ID (
+                        <a class="text-dark" href="#args" onclick="getElementById('buttonThree').click()">args</a>
+                        ) ;
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingThree">
+            <h5 class="mb-0">
+                <button id="buttonThree" class="btn btn-link collapsed text-dark font-weight-bold w-100 text-left" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Expressões
+                </button>
+            </h5>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+            <div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" id="listaExp">
+                        <a class="text-dark" href="#listaExp">lista-exp</a>
+                        ➙
+                        <a class="text-dark" href="#exp">exp</a>
+                        ,
+                        <a class="text-dark" href="#listaExp">lista-exp</a>
+                        |
+                        <a class="text-dark" href="#exp">exp</a>
+                    </li>
+                    <li class="list-group-item" id="exp">
+                        <a class="text-dark" href="#exp">exp</a>
+                        ➙
+                        <a class="text-dark" href="#expSoma">exp-soma</a>
+                        <a class="text-dark" href="#opRelac">op-relac</a>
+                        <a class="text-dark" href="#expSoma">exp-soma</a>
+                        |
+                        <a class="text-dark" href="#expSoma">exp-soma</a>
+                    </li>
+                    <li class="list-group-item" id="opRelac">
+                        <a class="text-dark" href="#opRelac">op-relac</a>
+                        ➙ <= | < | > | >= | == | <>
+                    </li>
+                    <li class="list-group-item" id="expSoma">
+                        <a class="text-dark" href="#expSoma">exp-soma</a>
+                        ➙
+                        <a class="text-dark" href="#expMult">exp-mult</a>
+                        <a class="text-dark" href="#opSoma">op-soma</a>
+                        <a class="text-dark" href="#expSoma">exp-soma</a>
+                        |
+                        <a class="text-dark" href="#expMult">exp-mult</a>
+                    </li>
+                    <li class="list-group-item" id="opSoma">
+                        <a class="text-dark" href="#opSoma">op-soma</a>
+                        ➙ + | - | OR
+                    </li>
+                    <li class="list-group-item" id="expMult">
+                        <a class="text-dark" href="#expMult">exp-mult</a>
+                        ➙
+                        <a class="text-dark" href="#expMult">exp-mult</a>
+                        <a class="text-dark" href="#opMult">op-mult</a>
+                        <a class="text-dark" href="#expSimples">exp-simples</a>
+                        |
+                        <a class="text-dark" href="#expSimples">exp-simples</a>
+                    </li>
+                    <li class="list-group-item" id="opMult">
+                        <a class="text-dark" href="#opMult">op-mult</a>
+                        ➙ * | / | DIV | MOD | AND
+                    </li>
+                    <li class="list-group-item" id="expSimples">
+                        <a class="text-dark" href="#expSimples">exp-simples</a>
+                        ➙ (
+                        <a class="text-dark" href="#exp">exp</a>
+                        ) |
+                        <a class="text-dark" href="#var">var</a>
+                        |
+                        <a class="text-dark" href="#chamFunc">cham-func</a>
+                        |
+                        <a class="text-dark" href="#literal">literal</a>
+                        |
+                        <a class="text-dark" href="#opUnario">op-unario</a>
+                        <a class="text-dark" href="#exp">exp</a>
+                    </li>
+                    <li class="list-group-item" id="literal">
+                        <a class="text-dark" href="#literal">literal</a>
+                        ➙ NUMINT | NUMREAL | CARACTERE | STRING |
+                        <a class="text-dark" href="#valorVerdade">valor-verdade</a>
+                    </li>
+                    <li class="list-group-item" id="valorVerdade">
+                        <a class="text-dark" href="#valorVerdade">valor-verdade</a>
+                        ➙ TRUE | FALSE
+                    </li>
+                    <li class="list-group-item" id="chamFunc">
+                        <a class="text-dark" href="#chamFunc">cham-func</a>
+                        ➙ ID (
+                        <a class="text-dark" href="#args">args</a>
+                        );
+                    </li>
+                    <li class="list-group-item" id="args">
+                        <a class="text-dark" href="#args">args</a>
+                        ➙
+                        <a class="text-dark" href="#listaExp">lista-exp</a>
+                        | ε
+                    </li>
+                    <li class="list-group-item" id="var">
+                        <a class="text-dark" href="#var">var</a>
+                        ➙ ID | ID [
+                        <a class="text-dark" href="#expSoma">exp-soma</a>
+                        ]
+                    </li>
+                    <li class="list-group-item" id="listaVar">
+                        <a class="text-dark" href="#listaVar">lista-var</a>
+                        ➙
+                        <a class="text-dark" href="#var">var</a>
+                        ,
+                        <a class="text-dark" href="#listaVar">lista-var</a>
+                        |
+                        <a class="text-dark" href="#var">var</a>
+                    </li>
+                    <li class="list-group-item" id="opUnario">
+                        <a class="text-dark" href="#opUnario">op-unario</a>
+                        ➙ + | - | NOT
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingFour">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed text-dark font-weight-bold w-100 text-left" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Comentários
+                </button>
+            </h5>
+        </div>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+            <div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">comentário-linha ➙ //comentário</li>
+                    <li class="list-group-item">comentário-bloco ➙ /*comentário*/</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*<div class="card">
+        <div class="card-header">
+            <h5 class="font-weight-bold">Declarações</h5>
+        </div>
+
+    </div>
+    <br />
+    <div class="card">
+        <div class="card-header">
+            <h5 class="font-weight-bold"></h5>
+        </div>
+
+    </div>
+    <br />
+    <div class="card">
+        <div class="card-header">
+            <h5 class="font-weight-bold"></h5>
+        </div>
+
+    </div>
+    <br />
+    <div class="card">
+        <div class="card-header">
+            <h5 class="font-weight-bold"></h5>
+        </div>*@
+</div>

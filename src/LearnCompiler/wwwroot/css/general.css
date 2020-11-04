@@ -6,12 +6,26 @@ html, body {
     height: 100% !important;
 }
 
+.vh-80 {
+    height: 80vh !important;
+}
+.h-80 {
+    height: 80% !important;
+}
+.mh-80 {
+    min-height: 80% !important;
+}
+
+.dropdown-item:active{
+    background-color: darkgray !important;
+}
+
 textarea {
     background-color: transparent;
     width: 100% !important;
     border-color: #d3d3d3 !important;
     resize: none;
-    height: 30vh;
+    height: 35vh;
     word-break: break-all;
 }
 
