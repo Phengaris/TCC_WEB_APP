@@ -35,8 +35,28 @@
                             <p class="card-text">
                                 A inserção de código na <a class="text-primary" href="/Documentation/Grammar">gramática D+</a> deve ser feita na caixa de texto situada a esquerda da interface.
                                 A caixa de texto possibilita que o usuário digite qualquer caractere, delete caracteres e utilize os atalhos de copiar (CTRL + V), colar (CTRL + C), recortar (CTRL + X), selecionar tudo (CTRL + A) e desfazer (CTRL + Z).
-                                Quando houver inserção ou remoção de caracteres no <strong>final</strong> do código o processo do compilador deve continuar sem interrupções, caso contrário um botão de recompilar código aparece na tela e os processos do compilador param até que o botão seja pressionado.
-                                Caso haja erros de compilação no código inserido, o erro é destacado em <span class="text-danger">vermelho</span> dentro da caixa de texto e na <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba de erros</a>, facilitando o usuário a identificação de erros.
+                                Quando houver inserção ou remoção de caracteres no <strong>final</strong> do código o processo do compilador deve continuar sem interrupções, caso contrário um <a class="text-primary" href="#buttonScreenComponentsThree" onclick="ManualController.showButton('One', 'buttonScreenComponentsThree')">botão de recompilar</a> código aparece na interface e os processos do compilador param até que o botão seja pressionado.
+                                Caso haja erros de compilação no código inserido, o erro é destacado em <span class="text-danger">vermelho</span> dentro da caixa de texto e na <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba</a> de erros, facilitando o usuário a identificação de erros.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingScreenComponentsThree">
+                        <h5 class="mb-0">
+                            <button id="buttonScreenComponentsThree" class="btn btn-link text-dark font-weight-bold w-100" data-toggle="collapse" data-target="#collapseScreenComponentsThree" aria-expanded="true" aria-controls="collapsScreenComponentseThree">
+                                Botão de Recompilar
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseScreenComponentsThree" class="collapse" aria-labelledby="headingScreenComponentsThree" data-parent="#accordionScreenComponents">
+                        <div class="card-body">
+                            <img class="card-img-top" src="~/img/Manual/recompileButton.png" alt="Imagem do Botão de Recompilar">
+                            <p class="card-text">
+                                O botão de recompilar aparece na interface apenas quando o usuário digita algum caractere no início ou no meio do texto na <a class="text-primary" href="#buttonScreenComponentsOne" onclick="ManualController.showButton('One', 'buttonScreenComponentsOne')">caixa de texto</a>.
+                                Quando o botão de recompilar aparece na interface o processo de compilação para e só volta a processar quando o botão é pressionado.
+                                Ao pressionar o botão o compilador refaz todo o processo do código inserido na <a class="text-primary" href="#buttonScreenComponentsOne" onclick="ManualController.showButton('One', 'buttonScreenComponentsOne')">caixa de texto</a> e o botão desaparece da interface.
                             </p>
                         </div>
                     </div>
@@ -52,7 +72,7 @@
 
                     <div id="collapseScreenComponentsTwo" class="collapse" aria-labelledby="headingScreenComponentsTwo" data-parent="#accordionScreenComponents">
                         <div class="card-body">
-                            <img class="card-img-top" src="..." alt="Card image cap">
+                            <img class="card-img-top" src="~/img/Manual/tab.png" alt="Imagem da Aba de Seleção">
                             <p class="card-text">
                                 A aba de seleção é situada no lado direito da interface e possibilita que o usuário consiga selecionar uma das seguintes opções:
                                 <a class="text-primary" href="#buttonCompilerOne" onclick="ManualController.showButton('Two', 'buttonCompilerOne')">Análise Léxica</a>,
@@ -89,11 +109,32 @@
 
                         <div id="collapseCompilerOne" class="collapse" aria-labelledby="headingCompilerOne" data-parent="#accordionCompiler">
                             <div class="card-body">
-                                <img class="card-img-top" src="..." alt="Card image cap">
+                                <img class="card-img-top" src="~/img/Manual/lexicTab.png" alt="Imagem da Análise Léxica">
                                 <p class="card-text">
                                     A <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba</a> da Análise Léxica apresenta ao usuário o respectivo autômato finito do último lexema que está sendo construído na <a class="text-primary" href="#buttonScreenComponentsOne" onclick="ManualController.showButton('One', 'buttonScreenComponentsOne')">caixa de texto</a> de inserção de código.
-                                    As cores do diagrama devem mudar de acordo com a inserção de novos caracteres na <a class="text-primary" href="#buttonScreenComponentsOne" onclick="ManualController.showButton('One', 'buttonScreenComponentsOne')">caixa de texto</a> mostrando ao usuário em qual passo do diagrama o compilador está.
-                                    Quando o compilador identificar um token ou um erro sintático o autômato finito deverá ser inserido no slide show do histórico da Análise Léxica. Itens que não são considerados como erro, mas fazem parte do código, como espaçadores, tabulações e quebras de linhas também são demonstrados no histórico, porém, não apresentam um token.
+                                    As cores do autômato finito devem mudar de acordo com a inserção de novos caracteres na <a class="text-primary" href="#buttonScreenComponentsOne" onclick="ManualController.showButton('One', 'buttonScreenComponentsOne')">caixa de texto</a> mostrando ao usuário em qual passo do autômato finito o compilador está.
+                                    Quando o compilador identificar um lexema completo ou um erro sintático o autômato finito deverá ser inserido no <i>slide show</i> do <a class="text-primary" href="#buttonCompilerFive" onclick="ManualController.showButton('Two', 'buttonCompilerFive')">Histórico da Análise Léxica</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingCompilerFive">
+                            <h5 class="mb-0">
+                                <button id="buttonCompilerFive" class="btn btn-link text-dark font-weight-bold w-100" data-toggle="collapse" data-target="#collapseCompilerFive" aria-expanded="true" aria-controls="collapsCompilereFive">
+                                    Histórico da Análise Léxica
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapseCompilerFive" class="collapse" aria-labelledby="headingCompilerFive" data-parent="#accordionCompiler">
+                            <div class="card-body">
+                                <img class="card-img-top" src="~/img/Manual/lexicHistoric.png" alt="Imagem do Histórico da Análise Léxica">
+                                <p class="card-text">
+                                    O Histórico da <a class="text-primary" href="#buttonCompilerOne" onclick="ManualController.showButton('Two', 'buttonCompilerOne')">Análise Léxica</a> é um <i>slide show</i> que apresenta ao usuário todos os lexemas identificados pelo compilador.
+                                    O usuário pode navegar no histórico clicando nos botões da esquerda e da direita da imagem.
+                                    Lexemas que possuem um token apresentam acima da imagem do autômato finito o lexema e seu repectivo token.
+                                    Itens que não são considerados como erro, mas fazem parte do código, como espaçadores, tabulações e quebras de linhas também são demonstrados no histórico, porém, não apresentam um token.
                                 </p>
                             </div>
                         </div>
@@ -109,7 +150,7 @@
 
                         <div id="collapseCompilerTwo" class="collapse" aria-labelledby="headingCompilerTwo" data-parent="#accordionCompiler">
                             <div class="card-body">
-                                <img class="card-img-top" src="..." alt="Card image cap">
+                                <img class="card-img-top" src="~/img/Manual/syntaxTab.png" alt="Imagem da Análise Sintática">
                                 <p class="card-text">
                                     A <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba</a> da Análise Sintática apresenta ao usuário a respectiva Árvore Sintática que o compilador está construindo a partir do código digitado na <a class="text-primary" href="#buttonScreenComponentsOne" onclick="ManualController.showButton('One', 'buttonScreenComponentsOne')">caixa de texto</a> pelo usuário até o momento atual.
                                 </p>
@@ -127,9 +168,12 @@
 
                         <div id="collapseCompilerThree" class="collapse" aria-labelledby="headingCompilerThree" data-parent="#accordionCompiler">
                             <div class="card-body">
-                                <img class="card-img-top" src="..." alt="Card image cap">
+                                <img class="card-img-top" src="~/img/Manual/symbolTableTab.png" alt="Imagem da Tabela de Símbolos">
                                 <p class="card-text">
-                                    A <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba</a> da Tabela de Símbolos apresenta ao usuário a tabela de símbolos gerada pelo compilador até aquele momento com os atributos que são necessários para o processo de compilação.
+                                    A <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba</a> da Tabela de Símbolos apresenta ao usuário a tabela de símbolos gerada pelo compilador até aquele momento com os atributos obtidos pela
+                                    <a class="text-primary" href="#buttonCompilerOne" onclick="ManualController.showButton('Two', 'buttonCompilerOne')">Análise Léxica</a>
+                                    e pela
+                                    <a class="text-primary" href="#buttonCompilerTwo" onclick="ManualController.showButton('Two', 'buttonCompilerTwo')">Análise Sintática</a>.
                                 </p>
                             </div>
                         </div>
@@ -145,10 +189,11 @@
 
                         <div id="collapseCompilerFour" class="collapse" aria-labelledby="headingCompilerFour" data-parent="#accordionCompiler">
                             <div class="card-body">
-                                <img class="card-img-top" src="..." alt="Card image cap">
+                                <img class="card-img-top" src="~/img/Manual/errorRegister.png" alt="Imagem do Registro de Erros">
                                 <p class="card-text">
-                                    A <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba</a> de Erros mostra quais foram os erros encontrados até o momento atual e deve aparecer apenas quando há algum erro de compilação.
-                                    Se algum erro for corrigido o mesmo deve desaparecer da aba e caso todos os erros apresentados nessa aba sejam corrigidos, a aba deve desaparecer da tela.
+                                    O Registro de Erros ocorre na <a class="text-primary" href="#buttonScreenComponentsTwo" onclick="ManualController.showButton('One', 'buttonScreenComponentsTwo')">aba</a> de Erros que mostra quais foram os erros encontrados até o momento atual
+                                    e na <a class="text-primary" href="#buttonScreenComponentsOne" onclick="ManualController.showButton('One', 'buttonScreenComponentsOne')">caixa de texto</a> destacado em <span class="text-danger">vermelho</span> para erros léxicos.
+                                    Se algum erro for corrigido o mesmo deve desaparecer da aba de Erros e caso todos os erros apresentados nessa aba sejam corrigidos, a aba deve desaparecer da interface.
                                 </p>
                             </div>
                         </div>
