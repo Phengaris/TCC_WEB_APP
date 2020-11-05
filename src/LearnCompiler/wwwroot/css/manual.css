@@ -1,0 +1,8 @@
+﻿img {
+    height: 30vh !important;
+    width: auto !important;
+}
+
+.card-body{
+    display: inline-flex;
+}

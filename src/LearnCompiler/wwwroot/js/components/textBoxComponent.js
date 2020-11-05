@@ -18,6 +18,8 @@
 
             matches = [];
             matches = matches.concat(text.match(/"(?:[^"\\]|\\.)*"/));
+            matches = matches.concat(text.match(/[/][*](?:(?![*][/])|.)*[*][/]/));
+            matches = matches.concat(text.match(/[/][/].*/));
             matches = matches.filter((v, i) => matches.indexOf(v) === i && v !== null);
 
             for (var i = 0; i < matches.length; i++) {
