@@ -84,6 +84,12 @@
                 } while (index < syntaxTabDiv.childElementCount);
             }
         },
+        clear: function () {
+            var syntaxTabDiv = document.getElementById("syntaxAnalisysContent");
+            for (var i = syntaxTabDiv[0].childElementCount - 1; i >= 0; --i) {
+                syntaxTabDiv[0].children[i].remove();
+            }
+        },
         getTabs: function (addTab) {
             var len = Array.from(this.getSyntaxFunc().split(",")).length + addTab;
             return "&emsp;".repeat(len);
@@ -425,6 +431,7 @@
                     return [true, false, false];
                     break;
                 case "2":
+                    this.replaceLastSyntaxStep("3");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -432,6 +439,9 @@
                         return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
+                    break;
+                case "3":
+                    return this.removeLast(false, false, false);
                     break;
                 default:
             }

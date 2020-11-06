@@ -890,6 +890,7 @@
                 this.setElementAttribute("state", "entire_code", "");
                 ErrorManager.clearErrors();
                 SymbolTableController.clear();
+                SyntaxAnalysisController.clear();
             }
             else {
                 if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
@@ -903,7 +904,8 @@
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
                             if (token.length > 0) {
-                                SymbolTableController.delete();
+                                if (token === "IDENTIFICADOR")
+                                    SymbolTableController.delete();
                                 SyntaxAnalysisController.backspaceEvent(token, !alreadyRemovedSyntax);
                                 alreadyRemovedSyntax = true;
                             }
@@ -922,7 +924,8 @@
                             parentOfHistory.removeChild(parentOfHistory.lastChild);
                             token = lastImage.getAttribute("token");
                             if (token.length > 0) {
-                                SymbolTableController.delete();
+                                if (token === "IDENTIFICADOR")
+                                    SymbolTableController.delete();
                                 SyntaxAnalysisController.backspaceEvent(token, !alreadyRemovedSyntax);
                             }
                         }
@@ -1184,10 +1187,11 @@
                         this.getToken() === ""
                     )
                         this.setElementAttribute("state", "token", state);
-
-                    if (this.getToken() !== "") {
-                        SymbolTableController.add();
-                        SyntaxAnalysisController.callFunction(this.getToken(), this.getWord(), true);
+                    var token = this.getToken()
+                    if (token !== "") {
+                        if (token === "IDENTIFICADOR")
+                            SymbolTableController.add();
+                        SyntaxAnalysisController.callFunction(token, this.getWord(), true);
                     }
                     this.createImageFromCanvas("slideshow_child", canvas);
                     this.resetStateAttributes();

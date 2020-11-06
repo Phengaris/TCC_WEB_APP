@@ -348,3 +348,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/src/LearnCompiler/Properties/ServiceDependencies/LearnCompiler20201105190105 - Web Deploy/profile.arm.json
