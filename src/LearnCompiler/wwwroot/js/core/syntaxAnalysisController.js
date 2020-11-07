@@ -1,5 +1,9 @@
 ﻿var SyntaxAnalysis = function () {
     return {
+        scrollBottom: function () {
+            var syntaxAnalisys = document.getElementById("syntaxAnalisysContent");
+            syntaxAnalisys.scrollTop = syntaxAnalisys.scrollHeight;
+        },
         writeInTab: function (token = "", text, lexeme = "", addTab = 0) {
             var func = this.getLastSyntaxFunc(true);
             var step = this.getLastSyntaxStep();

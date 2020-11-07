@@ -1,5 +1,9 @@
 ﻿var ErrorController = function () {
     return {
+        scrollBottom: function () {
+            var generatedErrors = document.getElementById("generatedErrorsContent");
+            generatedErrors.scrollTop = generatedErrors.scrollHeight;
+        },
         addError: function (errorText, lexeme) {
             document.getElementById("generatedErrors").removeAttribute("hidden");
 
