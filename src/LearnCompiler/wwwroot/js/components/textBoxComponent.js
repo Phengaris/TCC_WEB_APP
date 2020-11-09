@@ -1,6 +1,10 @@
 ﻿var TextBox = function () {
     var invalidRegex = /((?![0-9])\.(?![0-9]))|([^0-9]\.[0-9])|([0-9]\.(?![0-9]))|[^ \.,/;()+*'"><=_a-zA-Z0-9[\-\]\n]+/gm;
     var invalidCharRegex = /('[^']{0,1}?')|('(?![^']{0,1}?').)/gm;
+    var stringRegex = /"(?:[^"\\]|\\.)*"/;
+    var blockCommentRegex = /[/][*](?:(?![*][/])|.)*[*][/]/;
+    var lineCommentRegex = /[/][/].*/;
+    var charRegex = /'[^']{0,1}?'/gm;
     var inputContainer = undefined;
     var textArea = undefined;
     var highlighter = undefined;
@@ -10,16 +14,16 @@
 
             matches = matches.concat(text.match(invalidRegex));
             matches = matches.concat(text.match(invalidCharRegex));
-            matches = matches.filter((v, i) => matches.indexOf(v) === i && v !== null && !v.match(/'[^']{0,1}?'/gm));
+            matches = matches.filter((v, i) => matches.indexOf(v) === i && v !== null && !v.match(charRegex));
 
             for (var i = 0; i < matches.length; i++) {
                 text = text.split(matches[i]).join('<span>' + matches[i] + '</span>');
             }
 
             matches = [];
-            matches = matches.concat(text.match(/"(?:[^"\\]|\\.)*"/));
-            matches = matches.concat(text.match(/[/][*](?:(?![*][/])|.)*[*][/]/));
-            matches = matches.concat(text.match(/[/][/].*/));
+            matches = matches.concat(text.match(stringRegex));
+            matches = matches.concat(text.match(blockCommentRegex));
+            matches = matches.concat(text.match(lineCommentRegex));
             matches = matches.filter((v, i) => matches.indexOf(v) === i && v !== null);
 
             for (var i = 0; i < matches.length; i++) {
