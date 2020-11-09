@@ -49,6 +49,9 @@
         onKeyUp: function (e) {
             LexicalAnalysis.onUserCodeKeyUp(e);
             this.applyText(textArea.value);
+            SyntaxAnalysisController.scrollBottom();
+            SymbolTableController.scrollBottom();
+            ErrorManager.scrollBottom();
         },
         onPaste: function (e) {
             LexicalAnalysis.onUserCodePaste(e)

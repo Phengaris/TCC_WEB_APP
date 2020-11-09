@@ -45,7 +45,8 @@
                 <div id="inputContainer" class="w-100">
                     <textarea id="userCode"
                               onkeyup="TextBoxComponent.onKeyUp(event)"
-                              onpaste="TextBoxComponent.onPaste(event)"></textarea>
+                              onpaste="TextBoxComponent.onPaste(event)"
+                              spellcheck="false"></textarea>
                 </div>
             </div>
         </div>
@@ -71,7 +72,7 @@
 
             <div id="symbolTable" class="tabContent wrapper">
                 <div class="scrollable-row">
-                    <div class="scrollable-container">
+                    <div id="symbolTableContent" class="scrollable-container">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -109,6 +110,7 @@
 
 <script>
     window.onload = function () {
+        document.getElementById("recompileButton").click();
         TextBoxComponent.init()
     };
     document.getElementById("defaultOpen").click();

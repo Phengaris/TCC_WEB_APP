@@ -17,6 +17,12 @@
                 e.style.color = "lightgray"
             }
             e.style.backgroundColor = color;
+            if (tabName === "syntaxAnalisys")
+                SyntaxAnalysisController.scrollBottom();
+            else if (tabName === "symbolTable")
+                SymbolTableController.scrollBottom();
+            else if (tabName === "generatedErrors")
+                ErrorManager.scrollBottom();
         },
         plusHistoryAnalexSlides: function (n) {
             this.showHistoryAnalexSlides(slideIndex += n);

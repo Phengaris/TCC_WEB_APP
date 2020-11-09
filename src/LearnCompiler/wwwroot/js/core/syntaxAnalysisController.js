@@ -1,5 +1,9 @@
 ﻿var SyntaxAnalysis = function () {
     return {
+        scrollBottom: function () {
+            var syntaxAnalisys = document.getElementById("syntaxAnalisysContent");
+            syntaxAnalisys.scrollTop = syntaxAnalisys.scrollHeight;
+        },
         writeInTab: function (token = "", text, lexeme = "", addTab = 0) {
             var func = this.getLastSyntaxFunc(true);
             var step = this.getLastSyntaxStep();
@@ -82,6 +86,12 @@
                     }
 
                 } while (index < syntaxTabDiv.childElementCount);
+            }
+        },
+        clear: function () {
+            var syntaxTabDiv = document.getElementById("syntaxAnalisysContent");
+            for (var i = syntaxTabDiv[0].childElementCount - 1; i >= 0; --i) {
+                syntaxTabDiv[0].children[i].remove();
             }
         },
         getTabs: function (addTab) {
@@ -425,6 +435,7 @@
                     return [true, false, false];
                     break;
                 case "2":
+                    this.replaceLastSyntaxStep("3");
                     this.concatenateLastSyntaxFunc(this.getLastSyntaxFunc(true) + "/decl");
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
@@ -432,6 +443,9 @@
                         return this.removeLast(false, false, false);
                     }
                     return [true, false, false];
+                    break;
+                case "3":
+                    return this.removeLast(false, false, false);
                     break;
                 default:
             }
@@ -528,7 +542,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -769,7 +783,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -867,7 +881,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -1243,7 +1257,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -1271,7 +1285,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -1373,7 +1387,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -1396,7 +1410,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -1446,7 +1460,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;
@@ -1559,7 +1573,7 @@
                     this.concatenateLastSyntaxStep("1");
                     var [success, hasErrors, deleteRow] = this.callFunction(token, lexeme);
                     if (!success) {
-                        return this.removeLast(false, false, false);
+                        return [false, false, false];
                     }
                     return [true, false, false];
                     break;

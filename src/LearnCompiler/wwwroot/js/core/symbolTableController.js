@@ -1,5 +1,9 @@
 ﻿var SymbolTable = function () {
     return {
+        scrollBottom: function () {
+            var symbolTable = document.getElementById("symbolTableContent");
+            symbolTable.scrollTop = symbolTable.scrollHeight;
+        },
         add: function () {
             var symbolTable = document.getElementById("symbolTable");
             var tbody = symbolTable.getElementsByTagName("tbody");
