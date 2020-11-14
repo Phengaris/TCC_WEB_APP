@@ -878,66 +878,52 @@
             }
         },
         backspaceEvent: function () {
-            var entireCodeBefore = this.getEntireCode();
-            var entireCodeCurrent = this.getEntireCurrentCode();
             var parentOfHistory = document.getElementById("slideshow_child");
             var images = this.getAllHistory();
-            var word = "";
-            if (entireCodeCurrent === "") {
-                this.clearCanvas();
-                this.resetStateAttributes();
-                this.deleteHistory();
-                this.setElementAttribute("state", "entire_code", "");
-                ErrorManager.clearErrors();
-                SymbolTableController.clear();
-                SyntaxAnalysisController.clear();
-            }
-            else {
-                if (entireCodeBefore.indexOf(entireCodeCurrent) === 0) {
-                    word = this.getWord();
-                    var alreadyRemovedSyntax = false;
-                    if (word === "") {
-                        if (images.length > 0) {
-                            lastImage = images[images.length - 1];
-                            word = lastImage.getAttribute("word");
-                            ErrorManager.clearError(word);
-                            parentOfHistory.removeChild(parentOfHistory.lastChild);
-                            token = lastImage.getAttribute("token");
-                            if (token.length > 0) {
-                                if (token === "IDENTIFICADOR")
-                                    SymbolTableController.delete();
-                                SyntaxAnalysisController.backspaceEvent(token, !alreadyRemovedSyntax);
-                                alreadyRemovedSyntax = true;
-                            }
-                        }
+            var word = this.getWord();
+            if (word === "") {
+                if (images.length > 0) {
+                    lastImage = images[images.length - 1];
+                    word = lastImage.getAttribute("word");
+                    ErrorManager.clearError(word);
+                    parentOfHistory.removeChild(parentOfHistory.lastChild);
+                    token = lastImage.getAttribute("token");
+                    if (token.length > 0) {
+                        if (token === "IDENTIFICADOR")
+                            SymbolTableController.delete();
+                        SyntaxAnalysisController.backspaceEvent(token);
                     }
-                    this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
-
-
-                    word = this.getWord();
-
-                    if (word === "") {
-                        if (images.length > 0) {
-                            lastImage = images[images.length - 1];
-                            word = lastImage.getAttribute("word");
-                            ErrorManager.clearError(word);
-                            parentOfHistory.removeChild(parentOfHistory.lastChild);
-                            token = lastImage.getAttribute("token");
-                            if (token.length > 0) {
-                                if (token === "IDENTIFICADOR")
-                                    SymbolTableController.delete();
-                                SyntaxAnalysisController.backspaceEvent(token, !alreadyRemovedSyntax);
-                            }
-                        }
-                    }
-
-                    this.clearCanvas();
-                    this.resetStateAttributes();
-                    this.analyseEntireCode(word);
-                } else {
-                    document.getElementById("recompileButton").removeAttribute("hidden");
                 }
             }
+            this.setElementAttribute("state", "word", word.substring(0, word.length - 1));
+
+
+            word = this.getWord();
+
+            if (word === "") {
+                if (images.length > 0) {
+                    lastImage = images[images.length - 1];
+                    word = lastImage.getAttribute("word");
+                    ErrorManager.clearError(word);
+                    parentOfHistory.removeChild(parentOfHistory.lastChild);
+                    token = lastImage.getAttribute("token");
+                    if (token.length > 0) {
+                        if (token === "IDENTIFICADOR")
+                            SymbolTableController.delete();
+                        SyntaxAnalysisController.backspaceEvent(token);
+                    }
+                }
+            }
+
+            this.clearCanvas();
+            this.resetStateAttributes();
+            this.analyseEntireCode(word);
+        },
+        clearLexicalAnalysis: function () {
+            this.deleteHistory();
+            this.clearCanvas();
+            this.resetStateAttributes();
+            this.setElementAttribute("state", "entire_code", "");
         },
         clearCanvas: function () {
             var canvas = document.getElementById("canvas");
@@ -1024,9 +1010,6 @@
                 g.case_start === stateStart && g.case_end === stateEnd
             );
         },
-        getEntireCode: function () {
-            return document.getElementById("state").getAttribute("entire_code");
-        },
         getEntireCurrentCode: function () {
             return document.getElementById("userCode").value;
         },
@@ -1077,51 +1060,10 @@
                 return true;
             return false;
         },
-        onUserCodePaste: function (e) {
-            if (!document.getElementById("recompileButton").hasAttribute("hidden"))
-                return;
-
-            if (this.getEntireCurrentCode().length !== 0) {
-                document.getElementById("recompileButton").removeAttribute("hidden");
-                return;
-            }
-            var code = (e.originalEvent || e).clipboardData.getData('text/plain');
-            this.analyseEntireCode(code);
-        },
-        onUserCodeKeyUp: function (e) {
-            var key = e.key;
-            if (e.ctrlKey)
-                return;
-
-            if (key === "Backspace") {
-                this.backspaceEvent();
-            } else if (key === "Enter" || key.length === 1) {
-                if (!document.getElementById("recompileButton").hasAttribute("hidden"))
-                    return;
-
-                var entireCodeBefore = this.getEntireCode();
-                var entireCodeCurrent = this.getEntireCurrentCode();
-                if (entireCodeCurrent.indexOf(entireCodeBefore) !== 0) {
-                    document.getElementById("recompileButton").removeAttribute("hidden");
-                    return;
-                }
-
-                this.startAnalysis(key, false);
-                if (repeatWord !== "")
-                    this.repeatWordEvent();
-            }
-        },
-        onRecompileClick: function () {
-            this.deleteHistory();
-            this.clearCanvas();
-            this.resetStateAttributes();
-            this.setElementAttribute("state", "entire_code", "");
-            ErrorManager.clearErrors();
-            SyntaxAnalysisController.clearSyntaxAnalysis();
-            SymbolTableController.clear();
-            var entireCode = this.getEntireCurrentCode();
-            this.analyseEntireCode(entireCode);
-            document.getElementById("recompileButton").setAttribute("hidden", "hidden");
+        onUserCodeKeyUp: function (key) {
+            this.startAnalysis(key, false);
+            if (repeatWord !== "")
+                this.repeatWordEvent();
         },
         repeatWordEvent: function () {
             if (!document.getElementById("recompileButton").hasAttribute("hidden"))
