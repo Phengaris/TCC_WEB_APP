@@ -581,7 +581,7 @@
         { lexeme: "NOT", token: "PR_NOT" }
     ];
     var separators = [" ", "Enter", "Tab"];
-    var separatorsCode = [10];
+    var separatorsCode = [10, 13, 32];
     return {
         analysis: function (character) {
             var state = this.getState();
@@ -858,12 +858,13 @@
                 this.setElementAttribute("state", "state", "13");
         },
         analysisCase15: function (character) {
-            if (character === "Enter")
+            if (character === "Enter" || character.charCodeAt(0) === 10)
                 this.setElementAttribute("state", "state", "LOOP1");
         },
         analysisCaseSeparator: function (character) {
-            if (!separators.includes(character) || !separatorsCode.includes(character.charCodeAt()))
-                repeatWord = character;
+            if (separators.includes(character) || separatorsCode.includes(character.charCodeAt()))
+                return;
+            repeatWord = character;
         },
         analyseEntireCode: function (code) {
             var isRepeat = false;
